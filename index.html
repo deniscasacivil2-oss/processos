@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão Estratégica Olímpia - Painel de Controlo</title>
+    <title>Divisão de Governança, Processos e Projetos Estratégicos</title>
     
     <!-- Frameworks e Estilos -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,24 +13,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .sidebar-bg { background-color: #1e293b; border-right: 1px solid #334155; } 
-        .card { background: #1e293b; border-radius: 6px; border: 1px solid #334155; transition: transform 0.2s; }
-        .card:hover { border-color: #64748b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
         
-        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #94a3b8; }
-        .nav-link:hover { background-color: rgba(255,255,255,0.05); color: white; }
-        .nav-link.active { background-color: #2563eb; color: #ffffff !important; font-weight: 600; }
+        /* Menu Lateral Tema Escuro (Padrão Aliena-o) */
+        .sidebar-bg { background-color: #0b1f3f; border-right: none; } 
+        
+        /* Cartões Tema Claro */
+        .card { background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* Navegação Tema Escuro / Amarelo (Padrão Aliena-o) */
+        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #cbd5e1; margin: 0 8px; padding: 12px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; }
+        .nav-link.active { background-color: #eab308; color: #0f172a !important; font-weight: 700; border-right: none; }
         
         .submenu-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease-out; }
         .submenu-wrapper.open { grid-template-rows: 1fr; }
         .submenu-inner { overflow: hidden; }
         .submenu-link { 
-            display: block; padding: 8px 12px 8px 40px; font-size: 10px; color: #94a3b8; 
+            display: block; padding: 8px 12px 8px 48px; font-size: 10px; color: #94a3b8; 
             text-transform: uppercase; font-weight: 600; cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s; margin: 0 8px; border-radius: 6px;
         }
-        .submenu-link:hover { color: #38bdf8; background-color: rgba(56, 189, 248, 0.05); }
+        .submenu-link:hover { color: #eab308; background-color: rgba(255, 255, 255, 0.05); }
 
         .section-content { display: none; }
         .section-content.active { display: block; animation: fadeIn 0.4s ease-out; }
@@ -38,36 +43,34 @@
 
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999; color: white;
+            background: #f8fafc; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999; color: #334155;
         }
 
-        .kpi-title { font-size: 10px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-        .kpi-value { font-size: 18px; font-weight: 700; color: #f8fafc; }
+        .kpi-title { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+        .kpi-value { font-size: 18px; font-weight: 700; color: #1e293b; }
         
-        /* Estilos Kanban */
-        .kanban-kpi-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; }
+        /* Estilos Kanban Tema Claro */
+        .kanban-kpi-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .kanban-kpi-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
         .kanban-col-wrapper { min-width: 280px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        .kanban-header { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; color: #0f172a; }
-        .kanban-header-count { background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 12px; font-size: 10px; font-weight: 900; }
+        .kanban-header { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; color: #ffffff; }
+        .kanban-header-count { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 12px; font-size: 10px; font-weight: 900; }
         
-        .kanban-card { background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 12px; font-size: 11px; display: flex; flex-direction: column; gap: 6px; transition: transform 0.2s; position: relative; }
-        .kanban-card:hover { transform: translateY(-2px); border-color: #64748b; }
+        .kanban-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; font-size: 11px; display: flex; flex-direction: column; gap: 6px; transition: transform 0.2s; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: #334155; }
+        .kanban-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .semaforo-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        /* Novos Estilos Visão Geral */
-        .vg-kpi-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-top: 3px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center; }
-        .vg-kpi-card .vg-val { font-size: 24px; font-weight: 900; color: #f8fafc; line-height: 1.2; }
-        .vg-kpi-card .vg-label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
-        .vg-chart-title { font-size: 11px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid #334155; margin-bottom: 12px; }
-
-        .sugestao-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+        /* Novos Estilos Visão Geral Tema Claro */
+        .vg-kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-top: 3px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .vg-kpi-card .vg-val { font-size: 24px; font-weight: 900; color: #1e293b; line-height: 1.2; }
+        .vg-kpi-card .vg-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+        .vg-chart-title { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; margin-bottom: 12px; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="flex min-h-screen overflow-hidden">
@@ -75,52 +78,53 @@
     <!-- Overlay de Carregamento -->
     <div id="loading-overlay">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
-        <p class="text-sm font-bold uppercase tracking-widest">A sincronizar dados com o Google Sheets...</p>
+        <p class="text-sm font-bold uppercase tracking-widest text-slate-600">A sincronizar dados...</p>
     </div>
 
     <!-- Menu Lateral -->
-    <aside id="sidebar" class="sidebar-bg text-slate-300 flex-shrink-0 transition-all duration-300 w-72 h-screen z-50 overflow-hidden relative shadow-2xl">
+    <aside id="sidebar" class="sidebar-bg text-slate-300 flex-shrink-0 transition-all duration-300 w-72 h-screen z-50 overflow-hidden relative shadow-xl">
         <div class="w-72 flex flex-col h-full absolute top-0 left-0">
-            <div class="p-6 border-b border-slate-700 bg-slate-800/50 flex flex-col items-center justify-center text-center gap-3">
-                <div class="bg-white p-2 rounded-lg shrink-0 shadow-md">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Bras%C3%A3o_de_Ol%C3%ADmpia%2C_SP.jpg" alt="Brasão de Olímpia" class="h-20" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2RjMjYyNiIvPjwvc3ZnPg=='">
+            <div class="p-6 border-b border-white/10 flex flex-col items-center justify-center text-center gap-3">
+                <div class="shrink-0 drop-shadow-md">
+                    <!-- Brasão sem fundo branco, como na imagem de referência -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Bras%C3%A3o_de_Ol%C3%ADmpia%2C_SP.jpg" alt="Brasão de Olímpia" class="h-24" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2RjMjYyNiIvPjwvc3ZnPg=='">
                 </div>
                 <div>
                     <h2 class="text-sm font-bold tracking-widest uppercase text-white">Gestão de</h2>
-                    <p class="text-xs text-blue-400 mt-0.5 font-black uppercase tracking-wider">Processos</p>
+                    <p class="text-xs text-yellow-400 mt-0.5 font-black uppercase tracking-wider">Processos</p>
                 </div>
             </div>
             
-            <nav class="flex-grow p-4 space-y-1 overflow-y-auto">
-                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-full flex items-center p-3" id="nav-visao-geral">
+            <nav class="flex-grow py-4 space-y-1 overflow-y-auto">
+                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-visao-geral">
                     <i class="fa-solid fa-scale-balanced w-6 text-center"></i>
-                    <span class="text-[11px] font-bold uppercase ml-3">Visão Geral</span>
+                    <span class="text-[11px] uppercase ml-3">Visão Geral</span>
                 </button>
 
-                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-full flex items-center p-3 active" id="nav-status">
+                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-16px)] flex items-center active" id="nav-status">
                     <i class="fa-solid fa-layer-group w-6 text-center"></i>
-                    <span class="text-[11px] font-bold uppercase ml-3">Status</span>
+                    <span class="text-[11px] uppercase ml-3">Status</span>
                 </button>
 
-                <button onclick="changeSection('sugestoes', 'Sugestão de Melhorias')" class="nav-link w-full flex items-center p-3" id="nav-sugestoes">
+                <button onclick="changeSection('sugestoes', 'Sugestão de Melhorias')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-sugestoes">
                     <i class="fa-solid fa-lightbulb w-6 text-center"></i>
-                    <span class="text-[11px] font-bold uppercase ml-3">Sugestão de Melhorias</span>
+                    <span class="text-[11px] uppercase ml-3">Sugestão de Melhorias</span>
                 </button>
 
-                <button onclick="changeSection('proxima-acao', 'Próximas Ações')" class="nav-link w-full flex items-center p-3" id="nav-proxima-acao">
+                <button onclick="changeSection('proxima-acao', 'Próximas Ações')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-proxima-acao">
                     <i class="fa-solid fa-calendar-check w-6 text-center"></i>
-                    <span class="text-[11px] font-bold uppercase ml-3">Próxima Ação</span>
+                    <span class="text-[11px] uppercase ml-3">Próxima Ação</span>
                 </button>
 
                 <!-- Secretarias -->
-                <div class="mt-4 pt-4 border-t border-slate-700">
-                    <button onclick="toggleAccordion('sec-dropdown')" class="nav-link w-full flex items-center p-3 group">
+                <div class="mt-4 pt-4 border-t border-white/10">
+                    <button onclick="toggleAccordion('sec-dropdown')" class="nav-link w-[calc(100%-16px)] flex items-center group">
                         <i class="fa-solid fa-building-columns w-6 text-center"></i>
-                        <span class="text-[11px] font-bold uppercase ml-3 flex-1">Secretarias</span>
+                        <span class="text-[11px] uppercase ml-3 flex-1 text-left">Secretarias</span>
                         <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300" id="icon-sec-dropdown"></i>
                     </button>
                     <div id="sec-dropdown-wrapper" class="submenu-wrapper">
-                        <div class="submenu-inner">
+                        <div class="submenu-inner pt-1 pb-2">
                             <a class="submenu-link" onclick="viewSecretaria('Assistência Social')">Assistência Social</a>
                             <a class="submenu-link" onclick="viewSecretaria('Saúde')">Saúde</a>
                             <a class="submenu-link" onclick="viewSecretaria('Inovação')">Inovação</a>
@@ -137,21 +141,21 @@
                 </div>
             </nav>
 
-            <div class="p-4 bg-slate-900 text-[9px] text-slate-500 border-t border-slate-800 flex flex-col items-center text-center gap-1">
-                <p class="font-bold text-slate-400 uppercase tracking-wider">Divisão de Governança, Processos e Projetos Estratégicos</p>
-                <p>Secretaria da Casa Civil | Olímpia - SP</p>
+            <div class="p-4 bg-black/20 text-[9px] border-t border-white/10 flex flex-col items-center text-center gap-1">
+                <p class="font-bold text-blue-200 uppercase tracking-wider">Divisão de Governança, Processos e Projetos Estratégicos</p>
+                <p class="text-blue-300">Casa Civil | Município de Olímpia - SP</p>
             </div>
         </div>
     </aside>
 
-    <main class="flex-grow flex flex-col min-w-0 w-full h-screen overflow-hidden bg-slate-950 relative">
-        <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-6 shrink-0 z-40">
+    <main class="flex-grow flex flex-col min-w-0 w-full h-screen overflow-hidden bg-slate-50 relative">
+        <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 z-40 shadow-sm">
             <div class="flex items-center space-x-4">
-                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-2 transition-colors">
+                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-slate-700 p-2 transition-colors">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <div class="flex flex-col">
-                    <h1 id="page-title" class="text-sm font-black text-slate-100 uppercase tracking-wide">Acompanhamento de Processos</h1>
+                    <h1 id="page-title" class="text-sm font-black text-slate-800 uppercase tracking-wide">Acompanhamento de Processos</h1>
                 </div>
             </div>
         </header>
@@ -159,7 +163,7 @@
         <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="main-content">
             
             <!-- ==============================================
-                 VISÃO GERAL (NOVO DESIGN BASEADO NA IMAGEM)
+                 VISÃO GERAL
             =============================================== -->
             <section id="sec-visao-geral" class="section-content">
                 <div class="max-w-[1800px] mx-auto space-y-6">
@@ -179,7 +183,7 @@
                             </div>
                         </div>
 
-                        <!-- Chart: Impacto (Tipo de Cliente na ref) -->
+                        <!-- Chart: Impacto -->
                         <div class="card p-5 h-[300px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Grau de Impacto</h4>
                             <div class="flex-1 relative w-full h-full">
@@ -231,7 +235,7 @@
 
                     <!-- QUADRO KANBAN -->
                     <div class="flex gap-4 overflow-x-auto pb-6" id="kanban-board">
-                        <div class="w-full text-center py-32 text-slate-600 uppercase font-black tracking-widest">
+                        <div class="w-full text-center py-32 text-slate-400 uppercase font-black tracking-widest">
                             A carregar dados do Google Sheets...
                         </div>
                     </div>
@@ -239,36 +243,36 @@
                     <!-- DASHBOARD INFERIOR KANBAN -->
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-4">
                         <div class="card p-5 h-72 flex flex-col">
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 text-center">Processos por Status Kanban</h4>
+                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Processos por Status Kanban</h4>
                             <div class="flex-1 relative w-full h-full">
                                 <canvas id="kanbanChartDonut"></canvas>
                             </div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col lg:col-span-1">
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 text-center">Evolução Kanban</h4>
+                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Evolução Kanban</h4>
                             <div class="flex-1 relative w-full h-full">
                                 <canvas id="kanbanChartLine"></canvas>
                             </div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col lg:col-span-1">
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 text-center">Volume por Fase e Secretaria</h4>
+                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Volume por Fase e Secretaria</h4>
                             <div class="flex-1 relative w-full h-full">
                                 <canvas id="kanbanChartBarHoriz"></canvas>
                             </div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col justify-between">
                             <div>
-                                <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Semáforo</h4>
-                                <ul class="space-y-3 text-xs text-slate-300">
+                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-4">Semáforo</h4>
+                                <ul class="space-y-3 text-xs text-slate-600">
                                     <li class="flex items-start gap-3"><span class="semaforo-dot bg-green-500 mt-1 shrink-0"></span><span><strong>Em dia:</strong> dentro do prazo</span></li>
                                     <li class="flex items-start gap-3"><span class="semaforo-dot bg-yellow-500 mt-1 shrink-0"></span><span><strong>Atenção:</strong> próximo do prazo</span></li>
                                     <li class="flex items-start gap-3"><span class="semaforo-dot bg-red-500 mt-1 shrink-0"></span><span><strong>Atrasado:</strong> prazo vencido</span></li>
                                 </ul>
                             </div>
-                            <div class="mt-4 pt-4 border-t border-slate-700">
-                                <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Legenda dos Cards</h4>
-                                <ul class="space-y-2 text-xs text-slate-300">
-                                    <li class="flex items-center gap-2"><i class="fa-regular fa-calendar text-slate-500 w-4"></i> Prazo estimado</li>
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3">Legenda dos Cards</h4>
+                                <ul class="space-y-2 text-xs text-slate-600">
+                                    <li class="flex items-center gap-2"><i class="fa-regular fa-calendar text-slate-400 w-4"></i> Prazo estimado</li>
                                     <li class="flex items-center gap-2"><span class="semaforo-dot bg-orange-500 shrink-0 mx-1"></span> Situação do prazo</li>
                                 </ul>
                             </div>
@@ -284,7 +288,7 @@
             <section id="sec-sugestoes" class="section-content">
                 <div class="max-w-[1600px] mx-auto py-10">
                     <div class="space-y-4">
-                        <h3 class="text-xs font-black uppercase text-slate-400 tracking-widest flex items-center gap-2">
+                        <h3 class="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-list-ul"></i> Sugestões de Melhorias Registadas na Planilha
                         </h3>
                         <div id="lista-sugestoes-registadas" class="mt-4">
@@ -299,8 +303,8 @@
             =============================================== -->
             <section id="sec-proxima-acao" class="section-content">
                 <div class="max-w-[1600px] mx-auto py-10 text-center" id="sec-proxima-acao-content">
-                    <i class="fa-solid fa-calendar-days text-6xl text-blue-500/50 mb-6"></i>
-                    <h2 class="text-xl font-black uppercase tracking-wider">Plano de Próximas Ações</h2>
+                    <i class="fa-solid fa-calendar-days text-6xl text-blue-500/20 mb-6"></i>
+                    <h2 class="text-xl font-black uppercase tracking-wider text-slate-800">Plano de Próximas Ações</h2>
                     <div id="lista-proximas-acoes" class="mt-8 text-left">
                         <!-- Injetado via JS -->
                     </div>
@@ -314,7 +318,7 @@
                 <div class="max-w-[1600px] mx-auto space-y-6">
                     <div class="card p-6 border-l-4 border-blue-500 flex flex-col md:flex-row justify-between items-center gap-4">
                         <div>
-                            <h2 class="text-2xl font-black text-white uppercase" id="sec-title">Secretaria</h2>
+                            <h2 class="text-2xl font-black text-slate-800 uppercase" id="sec-title">Secretaria</h2>
                             <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Detalhamento Completo de Processos</p>
                         </div>
                         <div class="flex gap-2" id="sec-quick-stats">
@@ -345,7 +349,7 @@
         let kChartLine = null;
         let kChartBar = null;
 
-        // Fases Kanban padronizadas baseadas na imagem
+        // Fases Kanban padronizadas
         const FASES_KANBAN = [
             { id: 'A Iniciar', cor_bg: '#3b82f6', cor_text: '#1d4ed8', icone: 'fa-file-lines' },
             { id: 'Correção AS IS', cor_bg: '#f59e0b', cor_text: '#b45309', icone: 'fa-pen' },
@@ -413,9 +417,33 @@
                             "Melhorias habitacionais – Reformas “habita+olímpia”", "Fiscalização de Obras Privadas", "Licenciamento Urbanístico de Loteamento", 
                             "Análise do Estudo de Impacto de Vizinhança", "Gestão da Manutenção Predial", "Gerenciamento das Obras Públicas", "Execução de Obra não Predial"
                         ],
-                        "Segurança": [
+                        "Fundo Social": [
+                            "Benefícios Eventuais – Fórmula Infantil -Nutrir +", "Benefícios Eventuais – Suplemento Alimentar – Força Vital", 
+                            "Benefícios Eventuais – Projeto Novo Olhar", "Benefícios Eventuais – Atendimentos Emergenciais – Empréstimo de Equipamentos Hospitalares", 
+                            "Benefícios Eventuais – Brechó Solidário", "Estruturação do Processo Interno de Compras", 
+                            "Estruturação dos Cursos e Oficinas – Estaduais e Municipais"
+                        ],
+                        "Zeladoria e Meio Ambiente": [
+                            "Regulamentação do Processo de Doação de Insumo para uso Animal (Olímpia + Pet)", "Processo de Castração Animal", 
+                            "Regulamentação do Atendimento no Serviço de Acolhimento Animal", "Licenciamento Ambiental", "Fiscalização Ambiental", 
+                            "Gestão de Limpeza e Manutenção Urbana"
+                        ],
+                        "Segurança e Trânsito": [
                             "Gestão de Ocorrências GCM", "Gestão de Infração de Trânsito", "Solicitação e Execução de Lombadas", 
                             "Vistoria de Ocorrências - Defesa Civil", "Monitoramento e Fiscalização de Ocorrências - Defesa Civil", "Gestão de Eventos - Trânsito"
+                        ],
+                        "Casa Civil": [
+                            "Operacionalização de Emendas Parlamentares", "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
+                            "Gestão dos Indicadores", "Gestão de Metas e Acompanhamento Estratégico", "Metodologia de Mapeamento de Processos", 
+                            "Programa Rede 60+", "Programa Mãe Olímpiense", "Programa Habita + Olímpia (04 eixos)", "Programa Conecta + Olímpia", 
+                            "Programa Olímpia + Empreendedora", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
+                        ],
+                        "Controladoria": [
+                            "Gestão de Demandas Jurídicas - Processos Licitatórios", "Gestão dos Processos Administrativos Disciplinares", 
+                            "Processo de Elaboração e Publicação de Atos Oficiais", "Tema Sugerido: Gestão de Requisições do TCE Tema Apresentado: Realizar Compra Direta de Bens ou Serviços", 
+                            "Tema Sugerido: Adiantamento de Viagens Tema Apresentado: Pagamentos por Nota Fiscal", 
+                            "Tema Sugerido: Auditorias Internas Tema Apresentado: Pedido Por Estoque", 
+                            "Tema Sugerido: Convênios do Terceiro Setor Tema Apresentado: Processo SEI Interno"
                         ]
                     };
 
@@ -428,8 +456,7 @@
                             let sugestao = (idx % 3 === 0) ? `Rever as etapas burocráticas do processo "${proc}" para ganhar agilidade.` : '';
                             let proximaacao = (idx % 4 === 0) ? `Agendar reunião de validação da modelagem de ${proc} até sexta-feira.` : '';
                             
-                            // Gerar datas simuladas
-                            let data = new Date(2025, 4, 10 + Math.floor(Math.random()*20)); // Maio 2025
+                            let data = new Date(2025, 4, 10 + Math.floor(Math.random()*20));
 
                             mockData.push({
                                 id: `PRC-${String(countId++).padStart(3, '0')}`,
@@ -488,7 +515,7 @@
         }
 
         function renderAll() {
-            renderVisaoGeral(); // Executa Renderização da Visão Geral (Novo Design)
+            renderVisaoGeral(); 
             renderKanban();
             renderKanbanDashboard();
             renderSugestoesList();
@@ -512,13 +539,13 @@
         }
 
         // ==============================================
-        // RENDERIZAÇÃO DA VISÃO GERAL (DASHBOARD JURÍDICO STYLE)
+        // RENDERIZAÇÃO DA VISÃO GERAL
         // ==============================================
         function renderVisaoGeral() {
             if (!window.allData || window.allData.length === 0) return;
 
             const total = window.allData.length;
-            let concluidos = 0, ativos = 0, atrasados = 0, retrabalhoTotal = 0;
+            let concluidos = 0, ativos = 0, atrasados = 0;
             const secretarias = new Set();
             const sugestoesCount = window.allData.filter(d => getValorRobusto(d, ['sugestaodemelhoria'])).length;
 
@@ -528,7 +555,6 @@
             const respCounts = {};
 
             window.allData.forEach(d => {
-                // KPIs
                 let sGeral = normalizarTexto(getValorRobusto(d, ['statusgeral']));
                 if(sGeral.includes('encerrado') || sGeral.includes('concluido')) concluidos++;
                 else if(sGeral.includes('atrasado')) atrasados++;
@@ -537,7 +563,6 @@
                 let sec = getValorRobusto(d, ['secretaria', 'departamento']);
                 if(sec) secretarias.add(sec);
 
-                // Gráficos
                 sec = sec || 'Outras';
                 let impacto = getValorRobusto(d, ['grau_de_impacto', 'impacto']) || 'Não Definido';
                 let statusParaGrafico = getValorRobusto(d, ['statusgeral', 'status']) || 'Ativo';
@@ -549,14 +574,13 @@
                 respCounts[resp] = (respCounts[resp] || 0) + 1;
             });
 
-            // 1. Preencher Top KPIs
             const kpiRow = document.getElementById('vg-kpis');
             if (kpiRow) {
                 kpiRow.innerHTML = `
                     <div class="vg-kpi-card"><div class="vg-val">${total}</div><div class="vg-label">Total de Processos</div></div>
-                    <div class="vg-kpi-card"><div class="vg-val">${ativos}</div><div class="vg-label">Processos Ativos</div></div>
-                    <div class="vg-kpi-card"><div class="vg-val">${concluidos}</div><div class="vg-label">Processos Encerrados</div></div>
-                    <div class="vg-kpi-card border-t-red-500"><div class="vg-val text-red-400">${atrasados}</div><div class="vg-label">Atrasados</div></div>
+                    <div class="vg-kpi-card"><div class="vg-val text-blue-600">${ativos}</div><div class="vg-label">Processos Ativos</div></div>
+                    <div class="vg-kpi-card"><div class="vg-val text-green-600">${concluidos}</div><div class="vg-label">Processos Encerrados</div></div>
+                    <div class="vg-kpi-card border-t-red-500"><div class="vg-val text-red-600">${atrasados}</div><div class="vg-label">Atrasados</div></div>
                     
                     <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">150 d</div><div class="vg-label">Média Duração Est.</div></div>
                     <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">${secretarias.size}</div><div class="vg-label">Secretarias</div></div>
@@ -565,14 +589,12 @@
                 `;
             }
 
-            // Configurações Comuns do Chart.js
-            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.color = '#64748b';
             Chart.defaults.font.family = 'Inter';
             const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } };
 
-            // Chart 1: Secretarias (Barra Horizontal)
             if(vgChart1) vgChart1.destroy();
-            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 8); // Top 8
+            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 8); 
             vgChart1 = new Chart(document.getElementById('vgChartSecretarias'), {
                 type: 'bar',
                 data: {
@@ -582,22 +604,20 @@
                 options: {
                     indexAxis: 'y', responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { x: { grid: { color: '#334155' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
+                    scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
                 }
             });
 
-            // Chart 2: Grau de Impacto (Donut)
             if(vgChart2) vgChart2.destroy();
             vgChart2 = new Chart(document.getElementById('vgChartImpacto'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(impactoCounts),
-                    datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#3b82f6', '#1e3a8a', '#94a3b8'], borderWidth: 0 }]
+                    datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#3b82f6', '#1e3a8a', '#cbd5e1'], borderWidth: 0 }]
                 },
                 options: { ...commonOptions, cutout: '65%' }
             });
 
-            // Chart 3: Status Geral (Donut)
             if(vgChart3) vgChart3.destroy();
             vgChart3 = new Chart(document.getElementById('vgChartStatus'), {
                 type: 'doughnut',
@@ -608,7 +628,6 @@
                 options: { ...commonOptions, cutout: '65%' }
             });
 
-            // Chart 4: Evolução Mensal (Linha Preenchida)
             if(vgChart4) vgChart4.destroy();
             vgChart4 = new Chart(document.getElementById('vgChartEvolucao'), {
                 type: 'line',
@@ -624,13 +643,12 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { grid: { color: '#334155' }, beginAtZero: true }, x: { grid: { display: false } } }
+                    scales: { y: { grid: { color: '#e2e8f0' }, beginAtZero: true }, x: { grid: { display: false } } }
                 }
             });
 
-            // Chart 5: Responsáveis (Barra Horizontal)
             if(vgChart5) vgChart5.destroy();
-            const sortedResp = Object.entries(respCounts).sort((a,b) => b[1]-a[1]).slice(0, 7); // Top 7
+            const sortedResp = Object.entries(respCounts).sort((a,b) => b[1]-a[1]).slice(0, 7);
             vgChart5 = new Chart(document.getElementById('vgChartResponsavel'), {
                 type: 'bar',
                 data: {
@@ -640,14 +658,14 @@
                 options: {
                     indexAxis: 'y', responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { x: { grid: { color: '#334155' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
+                    scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
                 }
             });
         }
 
 
         // ==============================================
-        // RENDERIZAÇÃO DO KANBAN E OUTROS MENUS (MANTIDO INTACTO)
+        // RENDERIZAÇÃO DO KANBAN 
         // ==============================================
         function renderKanban() {
             const kpiRow = document.getElementById('kanban-kpis');
@@ -657,12 +675,12 @@
             const totalProcessos = window.allData.length;
 
             kpiRow.innerHTML += `
-                <div class="kanban-kpi-card bg-slate-800 border-slate-700">
+                <div class="kanban-kpi-card">
                     <div>
-                        <h4 class="text-3xl font-black text-white">${totalProcessos}</h4>
-                        <p class="text-[9px] uppercase font-bold text-slate-400 mt-1">Total de<br>Processos</p>
+                        <h4 class="text-3xl font-black text-slate-800">${totalProcessos}</h4>
+                        <p class="text-[9px] uppercase font-bold text-slate-500 mt-1">Total de<br>Processos</p>
                     </div>
-                    <div class="kanban-kpi-icon bg-slate-700"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <div class="kanban-kpi-icon bg-blue-100 text-blue-600"><i class="fa-solid fa-clipboard-list"></i></div>
                 </div>
             `;
             
@@ -678,11 +696,11 @@
                 kpiRow.innerHTML += `
                     <div class="kanban-kpi-card" style="border-left: 4px solid ${fase.cor_bg}">
                         <div>
-                            <h4 class="text-2xl font-black text-white">${items.length}</h4>
-                            <p class="text-[9px] uppercase font-bold text-slate-400 mt-1 truncate" title="${fase.id}">${fase.id.substring(0,15)}</p>
+                            <h4 class="text-2xl font-black text-slate-800">${items.length}</h4>
+                            <p class="text-[9px] uppercase font-bold text-slate-500 mt-1 truncate" title="${fase.id}">${fase.id.substring(0,15)}</p>
                             <p class="text-[10px] font-black mt-1" style="color: ${fase.cor_bg}">${pct}%</p>
                         </div>
-                        <div class="kanban-kpi-icon" style="background-color: ${fase.cor_bg}"><i class="fa-solid ${fase.icone}"></i></div>
+                        <div class="kanban-kpi-icon" style="background-color: ${fase.cor_bg}"><i class="fa-solid ${fase.icone} text-white"></i></div>
                     </div>
                 `;
 
@@ -690,7 +708,7 @@
                 col.className = 'kanban-col-wrapper';
                 
                 col.innerHTML = `
-                    <div class="kanban-header" style="background-color: ${fase.cor_bg}">
+                    <div class="kanban-header shadow-sm" style="background-color: ${fase.cor_bg}">
                         <span class="bg-black/20 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] shrink-0">${i+1}</span>
                         <span class="flex-1 text-white tracking-tight">${fase.id}</span>
                         <span class="kanban-header-count text-white">${items.length}</span>
@@ -706,13 +724,13 @@
                     const dotClass = coresSemaforo[Math.floor(Math.random() * coresSemaforo.length)];
 
                     let dataHTML = dataPrevista 
-                        ? `<div class="flex items-center gap-1.5 mt-2 text-slate-400 text-[10px]"><i class="fa-regular fa-calendar"></i> ${dataPrevista}</div>` 
-                        : `<div class="flex items-center gap-1.5 mt-2 text-slate-600 text-[10px]"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
+                        ? `<div class="flex items-center gap-1.5 mt-2 text-slate-500 text-[10px]"><i class="fa-regular fa-calendar"></i> ${dataPrevista}</div>` 
+                        : `<div class="flex items-center gap-1.5 mt-2 text-slate-400 text-[10px]"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
 
                     col.innerHTML += `
                         <div class="kanban-card">
-                            <h5 class="uppercase font-bold text-slate-100 leading-tight">${processo || 'Processo Sem Título'}</h5>
-                            <p class="text-[10px] font-semibold text-slate-400">${secretaria || 'Geral'}</p>
+                            <h5 class="uppercase font-bold text-slate-800 leading-tight">${processo || 'Processo Sem Título'}</h5>
+                            <p class="text-[10px] font-semibold text-slate-500">${secretaria || 'Geral'}</p>
                             <div class="flex justify-between items-end">
                                 ${dataHTML}
                                 <span class="semaforo-dot ${dotClass}" title="Status Prazo"></span>
@@ -722,7 +740,7 @@
                 });
 
                 if(items.length > 0) {
-                    col.innerHTML += `<div class="text-center text-[9px] text-slate-500 uppercase font-bold mt-1">+ ${items.length} processos</div>`;
+                    col.innerHTML += `<div class="text-center text-[9px] text-slate-400 uppercase font-bold mt-1">+ ${items.length} processos</div>`;
                 }
 
                 board.appendChild(col);
@@ -760,7 +778,7 @@
                     labels: ['01/04', '15/04', '01/05', '15/05', 'Hoje'],
                     datasets: [{ label: 'Acumulado', data: [12, 38, 63, 84, window.allData.length], borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#334155' } }, x: { grid: { display: false } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } } }
             });
 
             if(kChartBar) kChartBar.destroy();
@@ -771,10 +789,13 @@
                     labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]),
                     datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 4 }]
                 },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#334155' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
             });
         }
 
+        // ==============================================
+        // RENDERIZAÇÃO TABELAS (SUGESTÕES E PRÓXIMAS AÇÕES)
+        // ==============================================
         function renderSugestoesList() {
             const container = document.getElementById('lista-sugestoes-registadas');
             container.innerHTML = '';
@@ -785,22 +806,22 @@
             });
             
             if (sugestoes.length === 0) {
-                container.innerHTML = `<p class="col-span-full py-10 text-center text-slate-500 italic">Nenhuma sugestão encontrada na planilha.</p>`;
+                container.innerHTML = `<p class="col-span-full py-10 text-center text-slate-400 italic">Nenhuma sugestão encontrada na planilha.</p>`;
                 return;
             }
 
             let tableHTML = `
-                <div class="overflow-x-auto bg-slate-900 rounded-lg border border-slate-700 shadow-xl">
+                <div class="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-800 text-[10px] uppercase tracking-wider text-slate-400">
+                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 border-b border-slate-700 font-bold whitespace-nowrap">ID</th>
-                                <th class="p-4 border-b border-slate-700 font-bold whitespace-nowrap">Secretaria</th>
-                                <th class="p-4 border-b border-slate-700 font-bold">Processo</th>
-                                <th class="p-4 border-b border-slate-700 font-bold">Sugestão de Melhoria</th>
+                                <th class="p-4 font-bold whitespace-nowrap">ID</th>
+                                <th class="p-4 font-bold whitespace-nowrap">Secretaria</th>
+                                <th class="p-4 font-bold">Processo</th>
+                                <th class="p-4 font-bold">Sugestão de Melhoria</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-slate-100">
             `;
 
             sugestoes.forEach(s => {
@@ -810,11 +831,11 @@
                 const sugestaoText = getValorRobusto(s, ['sugestaodemelhoria']);
                 
                 tableHTML += `
-                    <tr class="hover:bg-slate-800/50 transition-colors">
-                        <td class="p-4 border-b border-slate-800/50 text-xs font-black text-slate-500 whitespace-nowrap">${idVal}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-xs font-bold text-blue-400 uppercase whitespace-nowrap">${secretaria}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-xs text-slate-300 font-semibold">${processo}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-sm text-slate-300 italic">"${sugestaoText}"</td>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 text-xs font-black text-slate-400 whitespace-nowrap">${idVal}</td>
+                        <td class="p-4 text-xs font-bold text-blue-600 uppercase whitespace-nowrap">${secretaria}</td>
+                        <td class="p-4 text-xs text-slate-700 font-semibold">${processo}</td>
+                        <td class="p-4 text-sm text-slate-600 italic">"${sugestaoText}"</td>
                     </tr>
                 `;
             });
@@ -833,22 +854,22 @@
             });
 
             if(acoes.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-500 py-10">Nenhuma próxima ação planeada.</p>`;
+                container.innerHTML = `<p class="text-center text-slate-400 py-10">Nenhuma próxima ação planeada.</p>`;
                 return;
             }
 
             let tableHTML = `
-                <div class="overflow-x-auto bg-slate-900 rounded-lg border border-amber-900/30 shadow-xl">
+                <div class="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-800 text-[10px] uppercase tracking-wider text-slate-400">
+                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
                             <tr>
-                                <th class="p-4 border-b border-slate-700 font-bold whitespace-nowrap">ID</th>
-                                <th class="p-4 border-b border-slate-700 font-bold whitespace-nowrap">Secretaria</th>
-                                <th class="p-4 border-b border-slate-700 font-bold">Processo</th>
-                                <th class="p-4 border-b border-slate-700 font-bold">Próxima Ação</th>
+                                <th class="p-4 font-bold whitespace-nowrap">ID</th>
+                                <th class="p-4 font-bold whitespace-nowrap">Secretaria</th>
+                                <th class="p-4 font-bold">Processo</th>
+                                <th class="p-4 font-bold">Próxima Ação</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-slate-100">
             `;
 
             acoes.forEach(a => {
@@ -858,13 +879,13 @@
                 const acaoText = getValorRobusto(a, ['proximaacao']);
                 
                 tableHTML += `
-                    <tr class="hover:bg-slate-800/50 transition-colors">
-                        <td class="p-4 border-b border-slate-800/50 text-xs font-black text-slate-500 whitespace-nowrap">${idVal}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-xs font-bold text-amber-500 uppercase whitespace-nowrap">${secretaria}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-xs text-slate-300 font-semibold">${processo}</td>
-                        <td class="p-4 border-b border-slate-800/50 text-sm font-semibold text-white">
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 text-xs font-black text-slate-400 whitespace-nowrap">${idVal}</td>
+                        <td class="p-4 text-xs font-bold text-amber-600 uppercase whitespace-nowrap">${secretaria}</td>
+                        <td class="p-4 text-xs text-slate-700 font-semibold">${processo}</td>
+                        <td class="p-4 text-sm font-semibold text-slate-800">
                             <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-clock-rotate-left text-amber-500/50"></i>
+                                <i class="fa-solid fa-clock-rotate-left text-amber-500/80"></i>
                                 ${acaoText}
                             </div>
                         </td>
@@ -876,7 +897,9 @@
             container.innerHTML = tableHTML;
         }
 
-        // Global functions accessible from HTML (onclick events)
+        // ==============================================
+        // FUNÇÕES GLOBAIS DE NAVEGAÇÃO E UX
+        // ==============================================
         window.changeSection = (id, title) => {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -908,29 +931,29 @@
             content.innerHTML = ''; statsContainer.innerHTML = '';
             
             if (secData.length === 0) {
-                content.innerHTML = `<div class="col-span-full py-20 text-center text-slate-600 font-black italic">Nenhum processo associado à secretaria "${nomeSelecionado}" foi encontrado.</div>`;
+                content.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-black italic">Nenhum processo associado à secretaria "${nomeSelecionado}" foi encontrado.</div>`;
                 return;
             }
 
             statsContainer.innerHTML = `
-                <div class="bg-blue-600/20 border border-blue-500/50 px-4 py-2 rounded text-center"><p class="text-[8px] font-black uppercase text-blue-400">Total de Processos</p><p class="text-lg font-black">${secData.length}</p></div>
+                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded text-center"><p class="text-[8px] font-black uppercase text-blue-500">Total de Processos</p><p class="text-lg font-black text-blue-700">${secData.length}</p></div>
             `;
 
             secData.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'card p-6 border-l-4 border-blue-500 flex flex-col gap-4';
+                card.className = 'card p-6 border-l-4 border-l-blue-500 flex flex-col gap-4';
                 
                 const idVal = getValorRobusto(p, ['id', 'codigo']);
                 const procVal = getValorRobusto(p, ['processo', 'nome']);
                 const statusVal = getValorRobusto(p, ['statusgeral', 'status']);
                 
                 let html = `
-                    <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b border-slate-800 pb-3 gap-2">
+                    <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b border-slate-100 pb-3 gap-2">
                         <div>
-                            ${idVal ? `<span class="inline-block px-2 py-0.5 bg-slate-800 text-slate-400 text-[9px] font-black rounded mb-1 border border-slate-700">ID: ${idVal}</span>` : ''}
-                            <h4 class="text-lg font-black uppercase text-white leading-tight">${procVal || 'Processo Sem Título'}</h4>
+                            ${idVal ? `<span class="inline-block px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-black rounded mb-1 border border-slate-200">ID: ${idVal}</span>` : ''}
+                            <h4 class="text-lg font-black uppercase text-slate-800 leading-tight">${procVal || 'Processo Sem Título'}</h4>
                         </div>
-                        <span class="text-[10px] font-black px-2 py-1 bg-slate-800 rounded text-blue-400 shrink-0 border border-blue-900/50">${statusVal || 'Pendente'}</span>
+                        <span class="text-[10px] font-black px-2 py-1 bg-blue-50 rounded text-blue-600 shrink-0 border border-blue-100">${statusVal || 'Pendente'}</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 `;
@@ -949,9 +972,9 @@
                         const colSpanClass = isLongText ? 'md:col-span-4 lg:col-span-5' : 'md:col-span-1';
 
                         html += `
-                            <div class="p-2 bg-slate-900/30 rounded border border-slate-800/50 ${colSpanClass}">
+                            <div class="p-2 bg-slate-50 rounded border border-slate-100 ${colSpanClass}">
                                 <p class="text-[8px] font-black text-slate-500 uppercase tracking-tighter mb-1">${label}</p>
-                                <p class="text-xs font-semibold text-slate-200 leading-relaxed">${val}</p>
+                                <p class="text-xs font-semibold text-slate-700 leading-relaxed">${val}</p>
                             </div>
                         `;
                     }
@@ -964,26 +987,6 @@
         };
 
         window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('w-0');
-
-        window.saveSugestao = () => {
-            const txt = document.getElementById('input-sugestao').value;
-            if(!txt) return;
-
-            Swal.fire({ title: 'A enviar para o Sheets...', didOpen: () => Swal.showLoading() });
-            
-            if (typeof google !== 'undefined' && google.script) {
-                google.script.run.withSuccessHandler(() => {
-                    document.getElementById('input-sugestao').value = '';
-                    Swal.fire('Sucesso!', 'Sugestão gravada com sucesso no Google Sheets.', 'success');
-                    refreshData(); 
-                }).saveSuggestionToSheet(txt);
-            } else {
-                setTimeout(() => {
-                    document.getElementById('input-sugestao').value = '';
-                    Swal.fire('Sucesso!', 'Sugestão simulada (sem ligação ativa ao Sheets).', 'success');
-                }, 1000);
-            }
-        };
     </script>
 </body>
 </html>

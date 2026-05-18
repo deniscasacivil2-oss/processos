@@ -111,18 +111,8 @@
                         <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300" id="icon-sec-dropdown"></i>
                     </button>
                     <div id="sec-dropdown-wrapper" class="submenu-wrapper">
-                        <div class="submenu-inner pt-1 pb-2">
-                            <a class="submenu-link" onclick="viewSecretaria('Assistência Social')">Assistência Social</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Saúde')">Saúde</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Inovação')">Inovação</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Esporte')">Esporte</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Educação')">Educação</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Fundo Social')">Fundo Social</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Zeladoria e Meio Ambiente')">Zeladoria e Meio Ambiente</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Obras')">Obras</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Segurança e Trânsito')">Segurança e Trânsito</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Casa Civil')">Casa Civil</a>
-                            <a class="submenu-link" onclick="viewSecretaria('Controladoria')">Controladoria</a>
+                        <!-- O menu de secretarias será preenchido fielmente via JavaScript com base nos dados -->
+                        <div class="submenu-inner pt-1 pb-2" id="dynamic-secretarias-menu">
                         </div>
                     </div>
                 </div>
@@ -290,7 +280,7 @@
             if(overlay) overlay.style.display = 'flex';
             
             if (typeof google !== 'undefined' && google.script && google.script.run) {
-                // SE ESTIVER NO GOOGLE APPS SCRIPT: Puxa os dados reais
+                // SE ESTIVER NO GOOGLE APPS SCRIPT: Puxa os dados reais da Planilha
                 google.script.run
                     .withSuccessHandler(handleDataSuccess)
                     .withFailureHandler(function(err) {
@@ -299,7 +289,7 @@
                     })
                     .getSheetData();
             } else {
-                // SE ESTIVER FORA DO GOOGLE (Ambiente de Teste/Visualização): Usa os dados falsos
+                // MODO DEMONSTRAÇÃO E TESTES: Usa dados gerados aleatoriamente
                 setTimeout(() => {
                     const dadosMapeados = {
                         "Assistência Social": [
@@ -307,7 +297,8 @@
                             "Benefício Eventual - Calamidade Pública", "Benefício Eventual - Morte", "Benefício Eventual - Nascimento", 
                             "Benefício Eventual - Vulnerabildade Temporária", "Denúncias", "Formalização de parcerias do terceiro setor", 
                             "Prestação de Contas do Terceiro Setor", "Gestão do bolsa família - Bloqueio e Cancelamento", 
-                            "Gestão do bolsa família - Desbloqueio e Reversão de Cancelamento", "Gestão do Fluxo de Trabalho da Divisão Administrativa do SUAS"
+                            "Gestão do bolsa família - Desbloqueio e Reversão de Cancelamento", "Gestão do Fluxo de Trabalho da Divisão Administrativa do SUAS",
+                            "Programa Rede 60+"
                         ],
                         "Saúde": [
                             "Encaminhamento Médico na Especialidade", "Gestão de Consultas Especializadas", 
@@ -316,7 +307,8 @@
                             "Implementação de Protocolos na Unidade de Pronto Atendimento (UPA) para Solicitação de Exame", 
                             "2ª RODADA SAÚDE Protocolo Implanon", "2ª RODADA SAÚDE Protocolo de Atendimento Geriatríca", 
                             "2ª RODADA SAÚDE Protocolo de Exames Terceirizados", "2ª RODADA SAÚDE Protocolo Fisioterapia", 
-                            "2ª RODADA SAÚDE Protocolo de Regulação do acesso a consultas e exames especializados", "2ª RODADA SAÚDE Protocolo EMAD"
+                            "2ª RODADA SAÚDE Protocolo de Regulação do acesso a consultas e exames especializados", "2ª RODADA SAÚDE Protocolo EMAD",
+                            "Programa Mãe Olímpiense"
                         ],
                         "Inovação": [
                             "Atendimento ao Cidadão – Procon", "Patrulha Agrícola Mecanizada", "Sandbox Regulatório Espontâneo", 
@@ -337,7 +329,7 @@
                         "Obras": [
                             "Melhorias habitacionais – Reformas “habita+olímpia”", "Fiscalização de Obras Privadas", "Licenciamento Urbanístico de Loteamento", 
                             "Análise do Estudo de Impacto de Vizinhança", "Gestão da Manutenção Predial", "Gerenciamento das Obras Públicas", "Execução de Obra não Predial",
-                            "Operacionalização de Emendas Parlamentares"
+                            "Operacionalização de Emendas Parlamentares", "Programa Habita + Olímpia (04 eixos)"
                         ],
                         "Fundo Social": [
                             "Benefícios Eventuais – Fórmula Infantil -Nutrir +", "Benefícios Eventuais – Suplemento Alimentar – Força Vital", 
@@ -357,8 +349,7 @@
                         "Casa Civil": [
                             "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
                             "Gestão dos Indicadores", "Gestão de Metas e Acompanhamento Estratégico", "Metodologia de Mapeamento de Processos", 
-                            "Programa Rede 60+", "Programa Mãe Olímpiense", "Programa Habita + Olímpia (04 eixos)", "Programa Conecta + Olímpia", 
-                            "Programa Olímpia + Empreendedora", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
+                            "Programa Conecta + Olímpia", "Programa Olímpia + Empreendedora", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
                         ],
                         "Controladoria": [
                             "Gestão de Demandas Jurídicas - Processos Licitatórios", "Gestão dos Processos Administrativos Disciplinares", 
@@ -401,7 +392,7 @@
                                 suporte: "TI / Jurídico",
                                 retabalho: "5%",
                                 statusgeral: f === 'Concluído' ? 'Encerrado' : ((Math.random() > 0.8) ? 'Atrasado' : 'Ativo'),
-                                secretaria: sec,
+                                secretaria: sec, // Nome da secretaria na base
                                 kanban: f, 
                                 sugestaodemelhoria: sugestao,
                                 proximaacao: proximaacao
@@ -425,6 +416,7 @@
         }
 
         function renderAll() {
+            renderSecretariasMenu(); // Preenche o menu com as secretarias reais
             renderVisaoGeral(); 
             renderKanban();
             renderKanbanDashboard();
@@ -455,6 +447,32 @@
                 }
             }
             return '';
+        }
+
+        function renderSecretariasMenu() {
+            const menuContainer = document.getElementById('dynamic-secretarias-menu');
+            if (!menuContainer) return;
+            menuContainer.innerHTML = '';
+
+            const secretariasUnicas = new Set();
+            
+            // Busca todas as secretarias únicas existentes nos dados reais
+            window.allData.forEach(d => {
+                let sec = getValorRobusto(d, ['secretaria', 'departamento']);
+                if (sec && sec.toString().trim() !== '') {
+                    secretariasUnicas.add(sec.toString().trim());
+                }
+            });
+
+            // Ordena alfabeticamente e cria os links
+            const sortedSecs = Array.from(secretariasUnicas).sort();
+            sortedSecs.forEach(sec => {
+                const a = document.createElement('a');
+                a.className = 'submenu-link';
+                a.onclick = () => viewSecretaria(sec);
+                a.innerText = sec; // Nome original exato vindo da base
+                menuContainer.appendChild(a);
+            });
         }
 
         function getSemaforoColorInfo(item) {
@@ -934,17 +952,11 @@
 
             const alvoNorm = normalizarTexto(nomeSelecionado);
 
+            // Filtro RIGOROSO: Só mostra se a coluna Secretaria for igualzinha ao nome clicado
             const secData = window.allData.filter(d => {
                 const valorSecretariaPlanilha = normalizarTexto(getValorRobusto(d, ['secretaria', 'departamento']));
                 if (!valorSecretariaPlanilha) return false;
-                if (valorSecretariaPlanilha === alvoNorm) return true;
-                
-                if (alvoNorm.includes('fundo') && valorSecretariaPlanilha.includes('fundo')) return true;
-                if (alvoNorm.includes('assistencia') && valorSecretariaPlanilha.includes('assistencia')) return true;
-                if (!alvoNorm.includes('fundo') && !alvoNorm.includes('assistencia')) {
-                    return valorSecretariaPlanilha.includes(alvoNorm);
-                }
-                return false;
+                return valorSecretariaPlanilha === alvoNorm; // <- Aqui está o segredo
             });
             
             const content = document.getElementById('sec-data-content');

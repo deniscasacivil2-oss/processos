@@ -87,11 +87,11 @@
             </div>
             
             <nav class="flex-grow py-4 space-y-1 overflow-y-auto">
-                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-visao-geral">
+                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-24px)] flex items-center active" id="nav-visao-geral">
                     <i class="fa-solid fa-scale-balanced w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Visão Geral</span>
                 </button>
-                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-24px)] flex items-center active" id="nav-status">
+                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-status">
                     <i class="fa-solid fa-layer-group w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Status</span>
                 </button>
@@ -132,14 +132,14 @@
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <div class="flex flex-col">
-                    <h1 id="page-title" class="text-sm font-black text-slate-800 uppercase tracking-wide">Acompanhamento de Processos</h1>
+                    <h1 id="page-title" class="text-sm font-black text-slate-800 uppercase tracking-wide">Análise de Resultados</h1>
                 </div>
             </div>
         </header>
 
         <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="main-content">
             
-            <section id="sec-visao-geral" class="section-content">
+            <section id="sec-visao-geral" class="section-content active">
                 <div class="max-w-[1800px] mx-auto space-y-6">
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3" id="vg-kpis"></div>
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
@@ -169,7 +169,7 @@
                 </div>
             </section>
 
-            <section id="sec-status" class="section-content active">
+            <section id="sec-status" class="section-content">
                 <div class="max-w-[1800px] mx-auto space-y-6">
                     <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3" id="kanban-kpis"></div>
                     <div class="flex gap-4 overflow-x-auto pb-6" id="kanban-board">
@@ -313,7 +313,7 @@
                         "Inovação": [
                             "Atendimento ao Cidadão – Procon", "Patrulha Agrícola Mecanizada", "Sandbox Regulatório Espontâneo", 
                             "Análise de confrontação de áreas para emissão de Certidões e Declaração de Reconhecimento de Limites.", 
-                            "Cursos e Capacitações realizados pelo Sistema S", "Captação de Recursos e Parcerias"
+                            "Cursos e Capacitações realizados pelo Sistema S", "Captação de Recursos e Parcerias", "Programa Olímpia + Empreendedora"
                         ],
                         "Esporte": [
                             "Planejamento da Organização de Eventos e Competições Esportivas - Planejamento", 
@@ -349,7 +349,7 @@
                         "Casa Civil": [
                             "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
                             "Gestão dos Indicadores", "Gestão de Metas e Acompanhamento Estratégico", "Metodologia de Mapeamento de Processos", 
-                            "Programa Conecta + Olímpia", "Programa Olímpia + Empreendedora", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
+                            "Programa Conecta + Olímpia", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
                         ],
                         "Controladoria": [
                             "Gestão de Demandas Jurídicas - Processos Licitatórios", "Gestão dos Processos Administrativos Disciplinares", 

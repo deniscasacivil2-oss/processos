@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divisão de Governança, Processos e Projetos Estratégicos</title>
     
-    <!-- Frameworks e Estilos -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -13,19 +12,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; overflow: hidden; }
         
-        /* Menu Lateral Tema Escuro (Padrão Aliena-o) */
-        .sidebar-bg { background-color: #0b1f3f; border-right: none; } 
+        .sidebar-bg { background-color: #0b1f3f; } 
         
-        /* Cartões Tema Claro */
         .card { background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
-        .card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         
-        /* Navegação Tema Escuro / Amarelo (Padrão Aliena-o) */
-        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #cbd5e1; margin: 0 8px; padding: 12px; }
-        .nav-link:hover { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; }
-        .nav-link.active { background-color: #eab308; color: #0f172a !important; font-weight: 700; border-right: none; }
+        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #cbd5e1; margin: 0 12px; padding: 12px; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
+        .nav-link.active { background-color: #eab308; color: #0f172a !important; font-weight: 800; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3); }
         
         .submenu-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease-out; }
         .submenu-wrapper.open { grid-template-rows: 1fr; }
@@ -33,7 +29,7 @@
         .submenu-link { 
             display: block; padding: 8px 12px 8px 48px; font-size: 10px; color: #94a3b8; 
             text-transform: uppercase; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; margin: 0 8px; border-radius: 6px;
+            transition: all 0.2s; margin: 0 12px; border-radius: 6px;
         }
         .submenu-link:hover { color: #eab308; background-color: rgba(255, 255, 255, 0.05); }
 
@@ -50,10 +46,9 @@
         .kpi-title { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
         .kpi-value { font-size: 18px; font-weight: 700; color: #1e293b; }
         
-        /* Estilos Kanban Tema Claro */
         .kanban-kpi-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .kanban-kpi-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
-        .kanban-col-wrapper { min-width: 280px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .kanban-col-wrapper { min-width: 210px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .kanban-header { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; color: #ffffff; }
         .kanban-header-count { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 12px; font-size: 10px; font-weight: 900; }
         
@@ -61,7 +56,6 @@
         .kanban-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .semaforo-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        /* Novos Estilos Visão Geral Tema Claro */
         .vg-kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-top: 3px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .vg-kpi-card .vg-val { font-size: 24px; font-weight: 900; color: #1e293b; line-height: 1.2; }
         .vg-kpi-card .vg-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
@@ -75,18 +69,15 @@
 </head>
 <body class="flex min-h-screen overflow-hidden">
 
-    <!-- Overlay de Carregamento -->
     <div id="loading-overlay">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
-        <p class="text-sm font-bold uppercase tracking-widest text-slate-600">A sincronizar dados...</p>
+        <p class="text-sm font-bold uppercase tracking-widest text-slate-600">A processar dados...</p>
     </div>
 
-    <!-- Menu Lateral -->
     <aside id="sidebar" class="sidebar-bg text-slate-300 flex-shrink-0 transition-all duration-300 w-72 h-screen z-50 overflow-hidden relative shadow-xl">
         <div class="w-72 flex flex-col h-full absolute top-0 left-0">
             <div class="p-6 border-b border-white/10 flex flex-col items-center justify-center text-center gap-3">
                 <div class="shrink-0 drop-shadow-md">
-                    <!-- Brasão sem fundo branco, como na imagem de referência -->
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Bras%C3%A3o_de_Ol%C3%ADmpia%2C_SP.jpg" alt="Brasão de Olímpia" class="h-24" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2RjMjYyNiIvPjwvc3ZnPg=='">
                 </div>
                 <div>
@@ -96,29 +87,25 @@
             </div>
             
             <nav class="flex-grow py-4 space-y-1 overflow-y-auto">
-                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-visao-geral">
+                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-visao-geral">
                     <i class="fa-solid fa-scale-balanced w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Visão Geral</span>
                 </button>
-
-                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-16px)] flex items-center active" id="nav-status">
+                <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-24px)] flex items-center active" id="nav-status">
                     <i class="fa-solid fa-layer-group w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Status</span>
                 </button>
-
-                <button onclick="changeSection('sugestoes', 'Sugestão de Melhorias')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-sugestoes">
+                <button onclick="changeSection('sugestoes', 'Sugestão de Melhorias')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-sugestoes">
                     <i class="fa-solid fa-lightbulb w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Sugestão de Melhorias</span>
                 </button>
-
-                <button onclick="changeSection('proxima-acao', 'Próximas Ações')" class="nav-link w-[calc(100%-16px)] flex items-center" id="nav-proxima-acao">
+                <button onclick="changeSection('proxima-acao', 'Próximas Ações')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-proxima-acao">
                     <i class="fa-solid fa-calendar-check w-6 text-center"></i>
                     <span class="text-[11px] uppercase ml-3">Próxima Ação</span>
                 </button>
 
-                <!-- Secretarias -->
                 <div class="mt-4 pt-4 border-t border-white/10">
-                    <button onclick="toggleAccordion('sec-dropdown')" class="nav-link w-[calc(100%-16px)] flex items-center group">
+                    <button onclick="toggleAccordion('sec-dropdown')" class="nav-link w-[calc(100%-24px)] flex items-center group">
                         <i class="fa-solid fa-building-columns w-6 text-center"></i>
                         <span class="text-[11px] uppercase ml-3 flex-1 text-left">Secretarias</span>
                         <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300" id="icon-sec-dropdown"></i>
@@ -142,7 +129,7 @@
             </nav>
 
             <div class="p-4 bg-black/20 text-[9px] border-t border-white/10 flex flex-col items-center text-center gap-1">
-                <p class="font-bold text-blue-200 uppercase tracking-wider">Divisão de Governança, Processos e Projetos Estratégicos</p>
+                <p class="font-bold text-blue-200 uppercase tracking-wider">Divisão de Governança e Processos</p>
                 <p class="text-blue-300">Casa Civil | Município de Olímpia - SP</p>
             </div>
         </div>
@@ -162,158 +149,98 @@
 
         <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="main-content">
             
-            <!-- ==============================================
-                 VISÃO GERAL
-            =============================================== -->
             <section id="sec-visao-geral" class="section-content">
                 <div class="max-w-[1800px] mx-auto space-y-6">
-                    
-                    <!-- Top KPIs (Grid 8) -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3" id="vg-kpis">
-                        <!-- Renderizado via JS -->
-                    </div>
-
-                    <!-- Middle Charts -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3" id="vg-kpis"></div>
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                        <!-- Chart: Processos por Secretaria -->
-                        <div class="card p-5 h-[300px] flex flex-col lg:col-span-4">
+                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Secretaria</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="vgChartSecretarias"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="vgChartSecretarias"></canvas></div>
                         </div>
-
-                        <!-- Chart: Impacto -->
-                        <div class="card p-5 h-[300px] flex flex-col lg:col-span-4">
+                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Grau de Impacto</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="vgChartImpacto"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="vgChartImpacto"></canvas></div>
                         </div>
-
-                        <!-- Chart: Status -->
-                        <div class="card p-5 h-[300px] flex flex-col lg:col-span-4">
+                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Status Geral</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="vgChartStatus"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="vgChartStatus"></canvas></div>
                         </div>
                     </div>
-
-                    <!-- Bottom Charts -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                        <!-- Chart: Evolução / Linha do Tempo -->
                         <div class="card p-5 h-[350px] flex flex-col lg:col-span-8">
                             <h4 class="vg-chart-title">Evolução de Entregas (Projeção Mensal)</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="vgChartEvolucao"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="vgChartEvolucao"></canvas></div>
                         </div>
-
-                        <!-- Chart: Responsáveis -->
                         <div class="card p-5 h-[350px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Responsável</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="vgChartResponsavel"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="vgChartResponsavel"></canvas></div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
-            <!-- ==============================================
-                 STATUS (KANBAN DASHBOARD)
-            =============================================== -->
             <section id="sec-status" class="section-content active">
                 <div class="max-w-[1800px] mx-auto space-y-6">
-                    
-                    <!-- LINHA DE KPIs (Topo) -->
-                    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3" id="kanban-kpis">
-                        <!-- Injetado via JS -->
-                    </div>
-
-                    <!-- QUADRO KANBAN -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3" id="kanban-kpis"></div>
                     <div class="flex gap-4 overflow-x-auto pb-6" id="kanban-board">
                         <div class="w-full text-center py-32 text-slate-400 uppercase font-black tracking-widest">
-                            A carregar dados do Google Sheets...
+                            A sincronizar dados...
                         </div>
                     </div>
-
-                    <!-- DASHBOARD INFERIOR KANBAN -->
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-4">
                         <div class="card p-5 h-72 flex flex-col">
                             <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Processos por Status Kanban</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="kanbanChartDonut"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartDonut"></canvas></div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col lg:col-span-1">
                             <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Evolução Kanban</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="kanbanChartLine"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartLine"></canvas></div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col lg:col-span-1">
                             <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Volume por Fase e Secretaria</h4>
-                            <div class="flex-1 relative w-full h-full">
-                                <canvas id="kanbanChartBarHoriz"></canvas>
-                            </div>
+                            <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartBarHoriz"></canvas></div>
                         </div>
                         <div class="card p-5 h-72 flex flex-col justify-between">
                             <div>
-                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-4">Semáforo</h4>
+                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-4">Semáforo de Prazo</h4>
                                 <ul class="space-y-3 text-xs text-slate-600">
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-green-500 mt-1 shrink-0"></span><span><strong>Em dia:</strong> dentro do prazo</span></li>
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-yellow-500 mt-1 shrink-0"></span><span><strong>Atenção:</strong> próximo do prazo</span></li>
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-red-500 mt-1 shrink-0"></span><span><strong>Atrasado:</strong> prazo vencido</span></li>
+                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-blue-500 mt-1 shrink-0"></span><span><strong>Em andamento:</strong> dentro do prazo</span></li>
+                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-green-500 mt-1 shrink-0"></span><span><strong>Entregue:</strong> processo concluído</span></li>
+                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-yellow-500 mt-1 shrink-0"></span><span><strong>Atenção:</strong> até 5 dias de atraso</span></li>
+                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-red-500 mt-1 shrink-0"></span><span><strong>Crítico:</strong> mais de 5 dias de atraso</span></li>
                                 </ul>
                             </div>
                             <div class="mt-4 pt-4 border-t border-slate-200">
-                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3">Legenda dos Cards</h4>
+                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3">Legenda</h4>
                                 <ul class="space-y-2 text-xs text-slate-600">
                                     <li class="flex items-center gap-2"><i class="fa-regular fa-calendar text-slate-400 w-4"></i> Prazo estimado</li>
-                                    <li class="flex items-center gap-2"><span class="semaforo-dot bg-orange-500 shrink-0 mx-1"></span> Situação do prazo</li>
+                                    <li class="flex items-center gap-2"><span class="semaforo-dot bg-orange-500 shrink-0 mx-1"></span> Estado do Processo</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
-            <!-- ==============================================
-                 SUGESTÃO DE MELHORIAS
-            =============================================== -->
             <section id="sec-sugestoes" class="section-content">
                 <div class="max-w-[1600px] mx-auto py-10">
                     <div class="space-y-4">
                         <h3 class="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
                             <i class="fa-solid fa-list-ul"></i> Sugestões de Melhorias Registadas na Planilha
                         </h3>
-                        <div id="lista-sugestoes-registadas" class="mt-4">
-                            <!-- Lista de Sugestões -->
-                        </div>
+                        <div id="lista-sugestoes-registadas" class="mt-4"></div>
                     </div>
                 </div>
             </section>
 
-            <!-- ==============================================
-                 PRÓXIMA AÇÃO
-            =============================================== -->
             <section id="sec-proxima-acao" class="section-content">
                 <div class="max-w-[1600px] mx-auto py-10 text-center" id="sec-proxima-acao-content">
                     <i class="fa-solid fa-calendar-days text-6xl text-blue-500/20 mb-6"></i>
                     <h2 class="text-xl font-black uppercase tracking-wider text-slate-800">Plano de Próximas Ações</h2>
-                    <div id="lista-proximas-acoes" class="mt-8 text-left">
-                        <!-- Injetado via JS -->
-                    </div>
+                    <div id="lista-proximas-acoes" class="mt-8 text-left"></div>
                 </div>
             </section>
 
-            <!-- ==============================================
-                 DETALHE SECRETARIA
-            =============================================== -->
             <section id="sec-secretaria-detalhe" class="section-content">
                 <div class="max-w-[1600px] mx-auto space-y-6">
                     <div class="card p-6 border-l-4 border-blue-500 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -321,64 +248,58 @@
                             <h2 class="text-2xl font-black text-slate-800 uppercase" id="sec-title">Secretaria</h2>
                             <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Detalhamento Completo de Processos</p>
                         </div>
-                        <div class="flex gap-2" id="sec-quick-stats">
-                            <!-- Stats Rápidos -->
-                        </div>
+                        <div class="flex gap-2" id="sec-quick-stats"></div>
                     </div>
-                    
-                    <!-- DADOS EXTRAÍDOS AUTOMATICAMENTE DAS COLUNAS -->
-                    <div id="sec-data-content" class="grid grid-cols-1 gap-6">
-                        <!-- Cartões de Processos Detalhados -->
-                    </div>
+                    <div id="sec-data-content" class="grid grid-cols-1 gap-6"></div>
                 </div>
             </section>
-
         </div>
     </main>
 
-    <!-- Script Principal (Google Apps Script) -->
     <script>
-        // Global Variables
         window.allData = [];
         
-        // Visão Geral Charts
         let vgChart1 = null, vgChart2 = null, vgChart3 = null, vgChart4 = null, vgChart5 = null;
-        
-        // Kanban Charts
-        let kChartDonut = null;
-        let kChartLine = null;
-        let kChartBar = null;
+        let kChartDonut = null, kChartLine = null, kChartBar = null;
 
-        // Fases Kanban padronizadas
         const FASES_KANBAN = [
-            { id: 'A Iniciar', cor_bg: '#3b82f6', cor_text: '#1d4ed8', icone: 'fa-file-lines' },
-            { id: 'Correção AS IS', cor_bg: '#f59e0b', cor_text: '#b45309', icone: 'fa-pen' },
-            { id: 'Aguardando Validação', cor_bg: '#f97316', cor_text: '#c2410c', icone: 'fa-users' },
-            { id: 'BPMN em Elaboração', cor_bg: '#0ea5e9', cor_text: '#0369a1', icone: 'fa-sitemap' },
-            { id: 'BPMN Revisão', cor_bg: '#8b5cf6', cor_text: '#5b21b6', icone: 'fa-magnifying-glass' },
-            { id: 'Diagnóstico de Melhoria', cor_bg: '#14b8a6', cor_text: '#0f766e', icone: 'fa-shield-halved' },
-            { id: 'Concluído', cor_bg: '#22c55e', cor_text: '#15803d', icone: 'fa-trophy' }
+            { id: 'A Iniciar', cor_bg: '#3b82f6', icone: 'fa-file-lines' },
+            { id: 'Correção AS IS', cor_bg: '#f59e0b', icone: 'fa-pen' },
+            { id: 'Aguardando Validação', cor_bg: '#f97316', icone: 'fa-users' },
+            { id: 'BPMN em Elaboração', cor_bg: '#0ea5e9', icone: 'fa-sitemap' },
+            { id: 'BPMN Revisão', cor_bg: '#8b5cf6', icone: 'fa-magnifying-glass' },
+            { id: 'Diagnóstico de Melhoria', cor_bg: '#14b8a6', icone: 'fa-shield-halved' },
+            { id: 'Concluído', cor_bg: '#22c55e', icone: 'fa-trophy' }
         ];
 
         window.onload = function() {
             refreshData();
         };
 
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            if (typeof str !== 'string') str = str.toString();
+            return str.replace(/[&<>'"]/g, function(match) {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+                return map[match];
+            });
+        }
+
         function refreshData() {
-            document.getElementById('loading-overlay').style.display = 'flex';
+            const overlay = document.getElementById('loading-overlay');
+            if(overlay) overlay.style.display = 'flex';
             
             if (typeof google !== 'undefined' && google.script && google.script.run) {
+                // SE ESTIVER NO GOOGLE APPS SCRIPT: Puxa os dados reais
                 google.script.run
-                    .withSuccessHandler(function(data) {
-                        handleDataSuccess(data);
-                    })
+                    .withSuccessHandler(handleDataSuccess)
                     .withFailureHandler(function(err) {
-                        Swal.fire('Erro', 'Falha ao ler dados do Sheets.', 'error');
-                        document.getElementById('loading-overlay').style.display = 'none';
+                        Swal.fire('Erro', 'Não foi possível estabelecer ligação com a base de dados.', 'error');
+                        if(overlay) overlay.style.display = 'none';
                     })
                     .getSheetData();
             } else {
-                // Mock Data para desenvolvimento
+                // SE ESTIVER FORA DO GOOGLE (Ambiente de Teste/Visualização): Usa os dados falsos
                 setTimeout(() => {
                     const dadosMapeados = {
                         "Assistência Social": [
@@ -415,7 +336,8 @@
                         ],
                         "Obras": [
                             "Melhorias habitacionais – Reformas “habita+olímpia”", "Fiscalização de Obras Privadas", "Licenciamento Urbanístico de Loteamento", 
-                            "Análise do Estudo de Impacto de Vizinhança", "Gestão da Manutenção Predial", "Gerenciamento das Obras Públicas", "Execução de Obra não Predial"
+                            "Análise do Estudo de Impacto de Vizinhança", "Gestão da Manutenção Predial", "Gerenciamento das Obras Públicas", "Execução de Obra não Predial",
+                            "Operacionalização de Emendas Parlamentares"
                         ],
                         "Fundo Social": [
                             "Benefícios Eventuais – Fórmula Infantil -Nutrir +", "Benefícios Eventuais – Suplemento Alimentar – Força Vital", 
@@ -433,7 +355,7 @@
                             "Vistoria de Ocorrências - Defesa Civil", "Monitoramento e Fiscalização de Ocorrências - Defesa Civil", "Gestão de Eventos - Trânsito"
                         ],
                         "Casa Civil": [
-                            "Operacionalização de Emendas Parlamentares", "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
+                            "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
                             "Gestão dos Indicadores", "Gestão de Metas e Acompanhamento Estratégico", "Metodologia de Mapeamento de Processos", 
                             "Programa Rede 60+", "Programa Mãe Olímpiense", "Programa Habita + Olímpia (04 eixos)", "Programa Conecta + Olímpia", 
                             "Programa Olímpia + Empreendedora", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
@@ -457,34 +379,28 @@
                             let proximaacao = (idx % 4 === 0) ? `Agendar reunião de validação da modelagem de ${proc} até sexta-feira.` : '';
                             
                             let data = new Date(2025, 4, 10 + Math.floor(Math.random()*20));
+                            
+                            let respTecnico = "Técnico(a) da " + sec;
+                            if (proc === "Operacionalização de Emendas Parlamentares") {
+                                respTecnico = "Alexandre Eloi da Costa";
+                            }
 
                             mockData.push({
                                 id: `PRC-${String(countId++).padStart(3, '0')}`,
                                 processo: proc,
                                 divisao: "Divisão de Operações",
-                                responsavel_tecnico: "Técnico(a) da " + sec,
-                                grau_de_impacto: ["Alto", "Médio", "Baixo", "Crítico"][Math.floor(Math.random() * 4)],
+                                responsaveltecnico: respTecnico,
+                                graudeimpacto: ["Alto", "Médio", "Baixo", "Crítico"][Math.floor(Math.random() * 4)],
                                 indicador: "Tempo Médio / Eficiência",
                                 formula: "Soma(Tempos)/Qtd",
-                                data_da_solicitacao_reuniao: "10/01/2026",
-                                data_prevista_de_entrega: data.toLocaleDateString('pt-PT'),
-                                data_real_de_entrega: f === 'Concluído' ? "10/06/2026" : "-",
-                                dias_de_atraso_na_entrega: (Math.random() > 0.8) ? Math.floor(Math.random() * 10) : 0,
-                                numero_de_dias_para_conclusao: "150",
-                                suporte_ao_processo: "TI / Jurídico",
-                                indice_de_retrabalho_perc: "5%",
-                                planejamento: "Concluído",
-                                mapeamento: f === 'A Iniciar' ? "Pendente" : "Concluído",
-                                as_is: "100% Documentado",
-                                redesenho: "Em Andamento",
-                                to_be: "Pendente",
-                                implantacao: "Pendente",
-                                status_geral_do_processo: f === 'Concluído' ? 'Encerrado' : ((Math.random() > 0.8) ? 'Atrasado' : 'Ativo'),
-                                prazo: "Dentro do Prazo",
-                                quantidade_real_de_processos: "1",
-                                implantacao_sistemica: "Sim",
-                                objetivo: "Padronização e otimização do fluxo de trabalho na " + sec + ".",
-                                observacoes: "Aguardando aprovação final da diretoria para avançar.",
+                                datadasolicitacaoreuniao: "10/01/2026",
+                                dataprevistadeentrega: data.toLocaleDateString('pt-PT'),
+                                datarealdeentrega: f === 'Concluído' ? "10/06/2026" : "-",
+                                diasdeatrasonaentrega: (Math.random() > 0.8) ? Math.floor(Math.random() * 10) : 0,
+                                numerodediasparaconclusao: "150",
+                                suporte: "TI / Jurídico",
+                                retabalho: "5%",
+                                statusgeral: f === 'Concluído' ? 'Encerrado' : ((Math.random() > 0.8) ? 'Atrasado' : 'Ativo'),
                                 secretaria: sec,
                                 kanban: f, 
                                 sugestaodemelhoria: sugestao,
@@ -492,26 +408,20 @@
                             });
                         });
                     }
-
                     handleDataSuccess(mockData);
                 }, 1000);
             }
         }
 
         function handleDataSuccess(data) {
-            if (data && data.error) {
-                Swal.fire('Erro no Sheets', data.error, 'error');
-                document.getElementById('loading-overlay').style.display = 'none';
-                return;
-            }
-            
             window.allData = (data || []).filter(d => {
                 const keys = Object.keys(d).filter(k => k !== 'row_index' && k !== '_id');
                 return keys.some(k => d[k] !== null && d[k] !== undefined && d[k].toString().trim() !== "");
             });
 
             renderAll();
-            document.getElementById('loading-overlay').style.display = 'none';
+            const overlay = document.getElementById('loading-overlay');
+            if(overlay) overlay.style.display = 'none';
         }
 
         function renderAll() {
@@ -524,29 +434,64 @@
 
         function normalizarTexto(str) {
             if (str === null || str === undefined) return "";
-            return str.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return str.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
         }
 
         function getValorRobusto(objeto, palavrasChave) {
+            if (!objeto) return '';
             const chaves = Object.keys(objeto);
-            for (let chave of chaves) {
-                const chaveNorm = normalizarTexto(chave).replace(/[^a-z0-9]/g, '');
-                for (let palavra of palavrasChave) {
-                    if (chaveNorm.includes(palavra)) return objeto[chave];
+            
+            for (let palavra of palavrasChave) {
+                const pNorm = normalizarTexto(palavra);
+                for (let chave of chaves) {
+                    if (normalizarTexto(chave) === pNorm) return objeto[chave];
+                }
+            }
+            
+            for (let palavra of palavrasChave) {
+                const pNorm = normalizarTexto(palavra);
+                for (let chave of chaves) {
+                    if (normalizarTexto(chave).includes(pNorm)) return objeto[chave];
                 }
             }
             return '';
         }
 
-        // ==============================================
-        // RENDERIZAÇÃO DA VISÃO GERAL
-        // ==============================================
+        function getSemaforoColorInfo(item) {
+            const fase = normalizarTexto(getValorRobusto(item, ['kanban']));
+            const statusStr = normalizarTexto(getValorRobusto(item, ['statusgeraldoprocesso', 'statusgeral', 'status']));
+            const isConcluido = fase === 'concluido' || statusStr.includes('concluido');
+
+            if (isConcluido) return { bg: 'bg-green-100', border: 'border-green-400', text: 'text-green-800', dot: 'bg-green-500' };
+
+            let diasAtrasoStr = getValorRobusto(item, ['diasdeatrasonaentrega', 'diasdeatraso', 'atraso']);
+            let diasAtraso = 0;
+            
+            if (diasAtrasoStr !== undefined && diasAtrasoStr !== null) {
+                let strClean = diasAtrasoStr.toString().trim();
+                if (strClean === '-' || strClean === '') {
+                    diasAtraso = 0;
+                } else {
+                    diasAtraso = parseInt(strClean, 10);
+                    if (isNaN(diasAtraso)) diasAtraso = 0;
+                }
+            }
+
+            if (diasAtraso <= 0) {
+                return { bg: 'bg-blue-100', border: 'border-blue-400', text: 'text-blue-800', dot: 'bg-blue-500' };
+            } else if (diasAtraso <= 5) {
+                return { bg: 'bg-yellow-100', border: 'border-yellow-400', text: 'text-yellow-900', dot: 'bg-yellow-500' };
+            } else {
+                return { bg: 'bg-red-100', border: 'border-red-400', text: 'text-red-900', dot: 'bg-red-500' };
+            }
+        }
+
         function renderVisaoGeral() {
             if (!window.allData || window.allData.length === 0) return;
 
             const total = window.allData.length;
             let concluidos = 0, ativos = 0, atrasados = 0;
-            const secretarias = new Set();
+            const secretariasUnicas = new Set();
             const sugestoesCount = window.allData.filter(d => getValorRobusto(d, ['sugestaodemelhoria'])).length;
 
             const secCounts = {};
@@ -555,18 +500,18 @@
             const respCounts = {};
 
             window.allData.forEach(d => {
-                let sGeral = normalizarTexto(getValorRobusto(d, ['statusgeral']));
+                let sGeral = normalizarTexto(getValorRobusto(d, ['statusgeral', 'statusgeraldoprocesso']));
                 if(sGeral.includes('encerrado') || sGeral.includes('concluido')) concluidos++;
                 else if(sGeral.includes('atrasado')) atrasados++;
                 else ativos++;
 
                 let sec = getValorRobusto(d, ['secretaria', 'departamento']);
-                if(sec) secretarias.add(sec);
+                if(sec) secretariasUnicas.add(sec);
 
                 sec = sec || 'Outras';
-                let impacto = getValorRobusto(d, ['grau_de_impacto', 'impacto']) || 'Não Definido';
-                let statusParaGrafico = getValorRobusto(d, ['statusgeral', 'status']) || 'Ativo';
-                let resp = getValorRobusto(d, ['responsavel', 'responsavel_tecnico']) || 'Não Atribuído';
+                let impacto = getValorRobusto(d, ['graudeimpacto', 'impacto']) || 'Não Definido';
+                let statusParaGrafico = getValorRobusto(d, ['statusgeraldoprocesso', 'statusgeral', 'status']) || 'Ativo';
+                let resp = getValorRobusto(d, ['responsaveltecnico', 'responsavel']) || 'Não Atribuído';
 
                 secCounts[sec] = (secCounts[sec] || 0) + 1;
                 impactoCounts[impacto] = (impactoCounts[impacto] || 0) + 1;
@@ -579,13 +524,12 @@
                 kpiRow.innerHTML = `
                     <div class="vg-kpi-card"><div class="vg-val">${total}</div><div class="vg-label">Total de Processos</div></div>
                     <div class="vg-kpi-card"><div class="vg-val text-blue-600">${ativos}</div><div class="vg-label">Processos Ativos</div></div>
-                    <div class="vg-kpi-card"><div class="vg-val text-green-600">${concluidos}</div><div class="vg-label">Processos Encerrados</div></div>
+                    <div class="vg-kpi-card"><div class="vg-val text-green-600">${concluidos}</div><div class="vg-label">Processos Concluídos</div></div>
                     <div class="vg-kpi-card border-t-red-500"><div class="vg-val text-red-600">${atrasados}</div><div class="vg-label">Atrasados</div></div>
-                    
-                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">150 d</div><div class="vg-label">Média Duração Est.</div></div>
-                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">${secretarias.size}</div><div class="vg-label">Secretarias</div></div>
-                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">5%</div><div class="vg-label">Retrabalho Médio</div></div>
-                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">${sugestoesCount}</div><div class="vg-label">Melhorias Propostas</div></div>
+                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">150 d</div><div class="vg-label">Média Estimada</div></div>
+                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">${secretariasUnicas.size}</div><div class="vg-label">Secretarias</div></div>
+                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">5%</div><div class="vg-label">Taxa Retrabalho</div></div>
+                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">${sugestoesCount}</div><div class="vg-label">Melhorias</div></div>
                 `;
             }
 
@@ -597,85 +541,50 @@
             const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 8); 
             vgChart1 = new Chart(document.getElementById('vgChartSecretarias'), {
                 type: 'bar',
-                data: {
-                    labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]),
-                    datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 3 }]
-                },
-                options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
-                }
+                data: { labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 3 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
             });
 
             if(vgChart2) vgChart2.destroy();
             vgChart2 = new Chart(document.getElementById('vgChartImpacto'), {
                 type: 'doughnut',
-                data: {
-                    labels: Object.keys(impactoCounts),
-                    datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#3b82f6', '#1e3a8a', '#cbd5e1'], borderWidth: 0 }]
-                },
+                data: { labels: Object.keys(impactoCounts), datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#3b82f6', '#1e3a8a', '#cbd5e1'], borderWidth: 0 }] },
                 options: { ...commonOptions, cutout: '65%' }
             });
 
             if(vgChart3) vgChart3.destroy();
             vgChart3 = new Chart(document.getElementById('vgChartStatus'), {
                 type: 'doughnut',
-                data: {
-                    labels: Object.keys(statusGeralCounts),
-                    datasets: [{ data: Object.values(statusGeralCounts), backgroundColor: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b'], borderWidth: 0 }]
-                },
+                data: { labels: Object.keys(statusGeralCounts), datasets: [{ data: Object.values(statusGeralCounts), backgroundColor: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b'], borderWidth: 0 }] },
                 options: { ...commonOptions, cutout: '65%' }
             });
 
             if(vgChart4) vgChart4.destroy();
             vgChart4 = new Chart(document.getElementById('vgChartEvolucao'), {
                 type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    datasets: [{
-                        label: 'Entregas Concluídas (Estimativa)',
-                        data: [5, 12, 18, 24, 30, 42, 55, 68, 75, 82, 88, 91],
-                        borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                        fill: true, tension: 0.1, pointRadius: 3, borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { grid: { color: '#e2e8f0' }, beginAtZero: true }, x: { grid: { display: false } } }
-                }
+                data: { labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], datasets: [{ label: 'Entregas Concluídas', data: [5, 12, 18, 24, 30, 42, 55, 68, 75, 82, 88, 91], borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.2)', fill: true, tension: 0.1, pointRadius: 3, borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#e2e8f0' }, beginAtZero: true }, x: { grid: { display: false } } } }
             });
 
             if(vgChart5) vgChart5.destroy();
             const sortedResp = Object.entries(respCounts).sort((a,b) => b[1]-a[1]).slice(0, 7);
             vgChart5 = new Chart(document.getElementById('vgChartResponsavel'), {
                 type: 'bar',
-                data: {
-                    labels: sortedResp.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]),
-                    datasets: [{ data: sortedResp.map(s => s[1]), backgroundColor: '#0ea5e9', borderRadius: 3 }]
-                },
-                options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
-                }
+                data: { labels: sortedResp.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedResp.map(s => s[1]), backgroundColor: '#0ea5e9', borderRadius: 3 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
             });
         }
 
-
-        // ==============================================
-        // RENDERIZAÇÃO DO KANBAN 
-        // ==============================================
         function renderKanban() {
             const kpiRow = document.getElementById('kanban-kpis');
             const board = document.getElementById('kanban-board');
+            if(!kpiRow || !board) return;
+
             kpiRow.innerHTML = ''; board.innerHTML = '';
-            
             const totalProcessos = window.allData.length;
 
             kpiRow.innerHTML += `
-                <div class="kanban-kpi-card">
+                <div class="kanban-kpi-card cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all" onclick="window.showPhaseModal('Todos')">
                     <div>
                         <h4 class="text-3xl font-black text-slate-800">${totalProcessos}</h4>
                         <p class="text-[9px] uppercase font-bold text-slate-500 mt-1">Total de<br>Processos</p>
@@ -694,7 +603,7 @@
                 const pct = totalProcessos > 0 ? Math.round((items.length / totalProcessos) * 100) : 0;
 
                 kpiRow.innerHTML += `
-                    <div class="kanban-kpi-card" style="border-left: 4px solid ${fase.cor_bg}">
+                    <div class="kanban-kpi-card cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all" style="border-left: 4px solid ${fase.cor_bg}" onclick="window.showPhaseModal('${fase.id}')">
                         <div>
                             <h4 class="text-2xl font-black text-slate-800">${items.length}</h4>
                             <p class="text-[9px] uppercase font-bold text-slate-500 mt-1 truncate" title="${fase.id}">${fase.id.substring(0,15)}</p>
@@ -706,7 +615,6 @@
 
                 const col = document.createElement('div');
                 col.className = 'kanban-col-wrapper';
-                
                 col.innerHTML = `
                     <div class="kanban-header shadow-sm" style="background-color: ${fase.cor_bg}">
                         <span class="bg-black/20 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] shrink-0">${i+1}</span>
@@ -716,36 +624,155 @@
                 `;
                 
                 items.forEach(item => {
-                    const processo = getValorRobusto(item, ['processo', 'nome']);
-                    const secretaria = getValorRobusto(item, ['secretaria', 'departamento']);
-                    const dataPrevista = getValorRobusto(item, ['dataprevista', 'data']);
+                    const processo = escapeHTML(getValorRobusto(item, ['processo', 'nome']) || 'Processo Sem Título');
+                    const secretaria = escapeHTML(getValorRobusto(item, ['secretaria', 'departamento']) || 'Geral');
+                    const dataPrevista = escapeHTML(getValorRobusto(item, ['dataprevistadeentrega', 'dataprevista', 'data']));
                     
-                    const coresSemaforo = ['bg-green-500', 'bg-yellow-500', 'bg-red-500'];
-                    const dotClass = coresSemaforo[Math.floor(Math.random() * coresSemaforo.length)];
+                    const statusInfo = getSemaforoColorInfo(item);
+                    const dataIndex = window.allData.indexOf(item);
 
                     let dataHTML = dataPrevista 
-                        ? `<div class="flex items-center gap-1.5 mt-2 text-slate-500 text-[10px]"><i class="fa-regular fa-calendar"></i> ${dataPrevista}</div>` 
-                        : `<div class="flex items-center gap-1.5 mt-2 text-slate-400 text-[10px]"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
+                        ? `<div class="flex items-center gap-1.5 px-2 py-1 rounded border ${statusInfo.bg} ${statusInfo.border} ${statusInfo.text} text-[10px] font-bold shadow-sm whitespace-nowrap"><i class="fa-regular fa-calendar"></i> ${dataPrevista}</div>` 
+                        : `<div class="flex items-center gap-1.5 px-2 py-1 rounded border bg-slate-50 border-slate-200 text-slate-400 text-[10px] font-bold whitespace-nowrap"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
 
                     col.innerHTML += `
-                        <div class="kanban-card">
-                            <h5 class="uppercase font-bold text-slate-800 leading-tight">${processo || 'Processo Sem Título'}</h5>
-                            <p class="text-[10px] font-semibold text-slate-500">${secretaria || 'Geral'}</p>
-                            <div class="flex justify-between items-end">
+                        <div class="kanban-card border-l-4 ${statusInfo.border} cursor-pointer hover:shadow-md transition-all" onclick="window.showProcessModal(${dataIndex})">
+                            <h5 class="uppercase font-bold text-slate-800 text-[10.5px] leading-snug mb-1 break-words">${processo}</h5>
+                            <p class="text-[10px] font-semibold text-slate-500 mb-3 break-words">${secretaria}</p>
+                            <div class="flex justify-between items-center">
                                 ${dataHTML}
-                                <span class="semaforo-dot ${dotClass}" title="Status Prazo"></span>
                             </div>
                         </div>
                     `;
                 });
 
-                if(items.length > 0) {
-                    col.innerHTML += `<div class="text-center text-[9px] text-slate-400 uppercase font-bold mt-1">+ ${items.length} processos</div>`;
-                }
-
                 board.appendChild(col);
             });
         }
+
+        window.showPhaseModal = function(faseId) {
+            let filtered;
+            let titulo;
+            let subtitulo;
+            
+            if (faseId === 'Todos') {
+                filtered = window.allData;
+                titulo = 'Todos os Processos';
+                subtitulo = 'Lista completa de todos os fluxos na base de dados';
+            } else {
+                filtered = window.allData.filter(d => {
+                    const kanbanStatus = getValorRobusto(d, ['kanban']);
+                    if (!kanbanStatus && faseId === 'A Iniciar') return true; 
+                    return normalizarTexto(kanbanStatus) === normalizarTexto(faseId);
+                });
+                titulo = `Fase: ${escapeHTML(faseId)}`;
+                subtitulo = `Processos atualmente na fase de ${escapeHTML(faseId)}`;
+            }
+
+            if (filtered.length === 0) {
+                Swal.fire({
+                    title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3">${titulo}</h3>`,
+                    html: `<p class="text-sm text-slate-500 mt-4">Nenhum registo encontrado.</p>`,
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
+
+            let htmlContent = `
+                <p class="text-xs text-slate-500 mb-4 font-semibold uppercase tracking-wider text-left border-b border-slate-100 pb-2">${subtitulo} (${filtered.length})</p>
+                <div class="max-h-[55vh] overflow-y-auto pr-2 space-y-3 text-left scroll-smooth">
+            `;
+
+            filtered.forEach(item => {
+                const dataIndex = window.allData.indexOf(item);
+                const processo = escapeHTML(getValorRobusto(item, ['processo', 'nome']) || 'Processo Sem Título');
+                const secretaria = escapeHTML(getValorRobusto(item, ['secretaria', 'departamento']) || 'Geral');
+                const statusInfo = getSemaforoColorInfo(item);
+                const idVal = escapeHTML(getValorRobusto(item, ['id', 'codigo']) || '-');
+
+                htmlContent += `
+                    <div class="p-3 border ${statusInfo.border} ${statusInfo.bg} rounded cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5" onclick="Swal.close(); setTimeout(() => window.showProcessModal(${dataIndex}), 250)">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold bg-white/60 text-slate-600 px-2 py-0.5 rounded tracking-widest uppercase border border-slate-200/50">ID: ${idVal}</span>
+                            <span class="semaforo-dot ${statusInfo.dot} shadow-sm" title="Status"></span>
+                        </div>
+                        <h5 class="text-xs font-bold text-slate-800 uppercase leading-snug mb-1">${processo}</h5>
+                        <p class="text-[10px] font-semibold text-slate-500 uppercase">${secretaria}</p>
+                    </div>
+                `;
+            });
+
+            htmlContent += `</div>`;
+
+            Swal.fire({
+                title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3 text-left">${titulo}</h3>`,
+                html: htmlContent,
+                showCloseButton: true,
+                showConfirmButton: false,
+                width: '600px',
+                customClass: { popup: 'rounded-xl shadow-2xl' }
+            });
+        };
+
+        window.showProcessModal = function(index) {
+            const item = window.allData[index];
+            if (!item) return;
+
+            const processo = escapeHTML(getValorRobusto(item, ['processo', 'nome']) || 'Processo Sem Título');
+            const secretaria = escapeHTML(getValorRobusto(item, ['secretaria', 'departamento']) || 'Geral');
+            const responsavel = escapeHTML(getValorRobusto(item, ['responsaveltecnico', 'responsavel']) || 'Não atribuído');
+            const fase = escapeHTML(getValorRobusto(item, ['kanban']) || 'N/A');
+            const statusGeral = escapeHTML(getValorRobusto(item, ['statusgeraldoprocesso', 'statusgeral', 'status']) || 'N/A');
+            const dataPrevista = escapeHTML(getValorRobusto(item, ['dataprevistadeentrega', 'dataprevista', 'data']) || 'Sem data');
+            const objetivo = escapeHTML(getValorRobusto(item, ['objetivo', 'descricao', 'observacoes']) || 'Sem descrição detalhada.');
+            const id = escapeHTML(getValorRobusto(item, ['id', 'codigo']) || '-');
+            
+            const statusInfo = getSemaforoColorInfo(item);
+            
+            const htmlContent = `
+                <div class="text-left font-sans text-sm text-slate-700 space-y-4 mt-2">
+                    <div class="flex justify-between items-start border-b border-slate-100 pb-3 gap-2">
+                        <div>
+                            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded tracking-widest uppercase border border-slate-200">ID: ${id}</span>
+                            <p class="text-xs font-bold text-blue-600 mt-2 uppercase tracking-wide">${secretaria}</p>
+                        </div>
+                        <span class="text-[10px] font-black px-3 py-1.5 rounded flex items-center gap-1.5 border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border} uppercase shadow-sm shrink-0">
+                            <span class="semaforo-dot ${statusInfo.dot}"></span>
+                            ${statusGeral}
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-3 rounded border border-slate-100">
+                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Fase Kanban</p>
+                            <p class="text-xs font-bold text-slate-800">${fase}</p>
+                        </div>
+                        <div class="p-3 rounded border ${statusInfo.border} ${statusInfo.bg}">
+                            <p class="text-[8px] font-black ${statusInfo.text} uppercase tracking-wider mb-1">Data Prevista</p>
+                            <p class="text-xs font-bold ${statusInfo.text}"><i class="fa-regular fa-calendar mr-1"></i> ${dataPrevista}</p>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-100 col-span-2">
+                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Responsável Técnico</p>
+                            <p class="text-xs font-bold text-slate-800">${responsavel}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded border border-slate-100 mt-4">
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Objetivo / Resumo</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">${objetivo}</p>
+                    </div>
+                </div>
+            `;
+
+            Swal.fire({
+                title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3">${processo}</h3>`,
+                html: htmlContent,
+                showCloseButton: true,
+                showConfirmButton: false,
+                width: '600px',
+                customClass: { popup: 'rounded-xl shadow-2xl' }
+            });
+        };
 
         function renderKanbanDashboard() {
             if (!window.allData || window.allData.length === 0) return;
@@ -764,20 +791,14 @@
             if(kChartDonut) kChartDonut.destroy();
             kChartDonut = new Chart(document.getElementById('kanbanChartDonut'), {
                 type: 'doughnut',
-                data: {
-                    labels: FASES_KANBAN.map(f => f.id),
-                    datasets: [{ data: FASES_KANBAN.map(f => statusCounts[f.id] || 0), backgroundColor: FASES_KANBAN.map(f => f.cor_bg), borderWidth: 0 }]
-                },
+                data: { labels: FASES_KANBAN.map(f => f.id), datasets: [{ data: FASES_KANBAN.map(f => statusCounts[f.id] || 0), backgroundColor: FASES_KANBAN.map(f => f.cor_bg), borderWidth: 0 }] },
                 options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'left', labels: { boxWidth: 10, font: { size: 9 } } } } }
             });
 
             if(kChartLine) kChartLine.destroy();
             kChartLine = new Chart(document.getElementById('kanbanChartLine'), {
                 type: 'line',
-                data: {
-                    labels: ['01/04', '15/04', '01/05', '15/05', 'Hoje'],
-                    datasets: [{ label: 'Acumulado', data: [12, 38, 63, 84, window.allData.length], borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2 }]
-                },
+                data: { labels: ['01/04', '15/04', '01/05', '15/05', 'Hoje'], datasets: [{ label: 'Acumulado', data: [12, 38, 63, 84, window.allData.length], borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#e2e8f0' } }, x: { grid: { display: false } } } }
             });
 
@@ -785,19 +806,14 @@
             const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 6);
             kChartBar = new Chart(document.getElementById('kanbanChartBarHoriz'), {
                 type: 'bar',
-                data: {
-                    labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]),
-                    datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 4 }]
-                },
+                data: { labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 4 }] },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
             });
         }
 
-        // ==============================================
-        // RENDERIZAÇÃO TABELAS (SUGESTÕES E PRÓXIMAS AÇÕES)
-        // ==============================================
         function renderSugestoesList() {
             const container = document.getElementById('lista-sugestoes-registadas');
+            if(!container) return;
             container.innerHTML = '';
             
             const sugestoes = window.allData.filter(d => {
@@ -806,7 +822,7 @@
             });
             
             if (sugestoes.length === 0) {
-                container.innerHTML = `<p class="col-span-full py-10 text-center text-slate-400 italic">Nenhuma sugestão encontrada na planilha.</p>`;
+                container.innerHTML = `<p class="col-span-full py-10 text-center text-slate-400 italic">Nenhum registo encontrado.</p>`;
                 return;
             }
 
@@ -825,10 +841,10 @@
             `;
 
             sugestoes.forEach(s => {
-                const idVal = getValorRobusto(s, ['id', 'codigo']) || '-';
-                const secretaria = getValorRobusto(s, ['secretaria', 'departamento']) || 'Geral';
-                const processo = getValorRobusto(s, ['processo', 'nome']) || 'Sem Título';
-                const sugestaoText = getValorRobusto(s, ['sugestaodemelhoria']);
+                const idVal = escapeHTML(getValorRobusto(s, ['id', 'codigo']) || '-');
+                const secretaria = escapeHTML(getValorRobusto(s, ['secretaria', 'departamento']) || 'Geral');
+                const processo = escapeHTML(getValorRobusto(s, ['processo', 'nome']) || 'Sem Título');
+                const sugestaoText = escapeHTML(getValorRobusto(s, ['sugestaodemelhoria']));
                 
                 tableHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
@@ -846,6 +862,7 @@
 
         function renderProximasAcoes() {
             const container = document.getElementById('lista-proximas-acoes');
+            if(!container) return;
             container.innerHTML = '';
             
             const acoes = window.allData.filter(d => {
@@ -854,7 +871,7 @@
             });
 
             if(acoes.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-10">Nenhuma próxima ação planeada.</p>`;
+                container.innerHTML = `<p class="text-center text-slate-400 py-10">Nenhum registo encontrado.</p>`;
                 return;
             }
 
@@ -873,10 +890,10 @@
             `;
 
             acoes.forEach(a => {
-                const idVal = getValorRobusto(a, ['id', 'codigo']) || '-';
-                const secretaria = getValorRobusto(a, ['secretaria', 'departamento']) || 'Geral';
-                const processo = getValorRobusto(a, ['processo', 'nome']) || 'Sem Título';
-                const acaoText = getValorRobusto(a, ['proximaacao']);
+                const idVal = escapeHTML(getValorRobusto(a, ['id', 'codigo']) || '-');
+                const secretaria = escapeHTML(getValorRobusto(a, ['secretaria', 'departamento']) || 'Geral');
+                const processo = escapeHTML(getValorRobusto(a, ['processo', 'nome']) || 'Sem Título');
+                const acaoText = escapeHTML(getValorRobusto(a, ['proximaacao']));
                 
                 tableHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
@@ -897,9 +914,6 @@
             container.innerHTML = tableHTML;
         }
 
-        // ==============================================
-        // FUNÇÕES GLOBAIS DE NAVEGAÇÃO E UX
-        // ==============================================
         window.changeSection = (id, title) => {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -922,38 +936,53 @@
 
             const secData = window.allData.filter(d => {
                 const valorSecretariaPlanilha = normalizarTexto(getValorRobusto(d, ['secretaria', 'departamento']));
-                return valorSecretariaPlanilha && (valorSecretariaPlanilha === alvoNorm || valorSecretariaPlanilha.includes(alvoNorm) || alvoNorm.includes(valorSecretariaPlanilha));
+                if (!valorSecretariaPlanilha) return false;
+                if (valorSecretariaPlanilha === alvoNorm) return true;
+                
+                if (alvoNorm.includes('fundo') && valorSecretariaPlanilha.includes('fundo')) return true;
+                if (alvoNorm.includes('assistencia') && valorSecretariaPlanilha.includes('assistencia')) return true;
+                if (!alvoNorm.includes('fundo') && !alvoNorm.includes('assistencia')) {
+                    return valorSecretariaPlanilha.includes(alvoNorm);
+                }
+                return false;
             });
             
             const content = document.getElementById('sec-data-content');
             const statsContainer = document.getElementById('sec-quick-stats');
-            
+            if(!content || !statsContainer) return;
+
             content.innerHTML = ''; statsContainer.innerHTML = '';
             
             if (secData.length === 0) {
-                content.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-black italic">Nenhum processo associado à secretaria "${nomeSelecionado}" foi encontrado.</div>`;
+                content.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-black italic">Nenhum registo mapeado.</div>`;
                 return;
             }
 
             statsContainer.innerHTML = `
-                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded text-center"><p class="text-[8px] font-black uppercase text-blue-500">Total de Processos</p><p class="text-lg font-black text-blue-700">${secData.length}</p></div>
+                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded text-center"><p class="text-[8px] font-black uppercase text-blue-500">Processos</p><p class="text-lg font-black text-blue-700">${secData.length}</p></div>
             `;
 
             secData.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'card p-6 border-l-4 border-l-blue-500 flex flex-col gap-4';
                 
-                const idVal = getValorRobusto(p, ['id', 'codigo']);
-                const procVal = getValorRobusto(p, ['processo', 'nome']);
-                const statusVal = getValorRobusto(p, ['statusgeral', 'status']);
+                const idVal = escapeHTML(getValorRobusto(p, ['id', 'codigo']));
+                const procVal = escapeHTML(getValorRobusto(p, ['processo', 'nome']));
+                const statusVal = escapeHTML(getValorRobusto(p, ['statusgeraldoprocesso', 'statusgeral', 'status']));
                 
+                const statusInfo = getSemaforoColorInfo(p);
+                let badgeColors = `${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`;
+
                 let html = `
                     <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b border-slate-100 pb-3 gap-2">
                         <div>
                             ${idVal ? `<span class="inline-block px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-black rounded mb-1 border border-slate-200">ID: ${idVal}</span>` : ''}
-                            <h4 class="text-lg font-black uppercase text-slate-800 leading-tight">${procVal || 'Processo Sem Título'}</h4>
+                            <h4 class="text-lg font-black uppercase text-slate-800 leading-tight">${procVal || 'Sem Título'}</h4>
                         </div>
-                        <span class="text-[10px] font-black px-2 py-1 bg-blue-50 rounded text-blue-600 shrink-0 border border-blue-100">${statusVal || 'Pendente'}</span>
+                        <span class="text-[10px] font-black px-3 py-1.5 rounded flex items-center gap-1.5 border ${badgeColors} shrink-0 uppercase shadow-sm">
+                            <span class="semaforo-dot ${statusInfo.dot}"></span>
+                            ${statusVal || 'Pendente'}
+                        </span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 `;
@@ -965,16 +994,28 @@
                     let isIgnored = keysToIgnore.includes(normalizedKey);
                     
                     if (!isIgnored && p[key] !== null && p[key] !== undefined && p[key].toString().trim() !== "") {
-                        const label = key.replace(/_/g, ' ').toUpperCase();
-                        const val = p[key];
+                        const label = escapeHTML(key.replace(/_/g, ' ').toUpperCase());
+                        const val = escapeHTML(p[key]);
                         
-                        const isLongText = val.toString().length > 55 || label.includes('OBJETIVO') || label.includes('OBSERVAÇÕES');
+                        const isLongText = val.toString().length > 55 || label.includes('OBJETIVO') || label.includes('OBSERVA');
                         const colSpanClass = isLongText ? 'md:col-span-4 lg:col-span-5' : 'md:col-span-1';
 
+                        let boxBg = 'bg-slate-50';
+                        let boxBorder = 'border-slate-100';
+                        let textColor = 'text-slate-700';
+                        let labelColor = 'text-slate-500';
+
+                        if (normalizedKey.includes('prazo') || normalizedKey.includes('dataprevista') || normalizedKey.includes('datadeentrega') || normalizedKey.includes('diasdeatraso')) {
+                            boxBg = statusInfo.bg;
+                            boxBorder = statusInfo.border;
+                            textColor = statusInfo.text;
+                            labelColor = statusInfo.text; 
+                        }
+
                         html += `
-                            <div class="p-2 bg-slate-50 rounded border border-slate-100 ${colSpanClass}">
-                                <p class="text-[8px] font-black text-slate-500 uppercase tracking-tighter mb-1">${label}</p>
-                                <p class="text-xs font-semibold text-slate-700 leading-relaxed">${val}</p>
+                            <div class="p-3 ${boxBg} rounded border ${boxBorder} ${colSpanClass}">
+                                <p class="text-[8px] font-black ${labelColor} uppercase tracking-tighter mb-1">${label}</p>
+                                <p class="text-xs font-bold ${textColor} leading-relaxed flex items-center">${val}</p>
                             </div>
                         `;
                     }

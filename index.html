@@ -279,129 +279,22 @@
             const overlay = document.getElementById('loading-overlay');
             if(overlay) overlay.style.display = 'flex';
             
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                // SE ESTIVER NO GOOGLE APPS SCRIPT: Puxa os dados reais da Planilha
-                google.script.run
-                    .withSuccessHandler(handleDataSuccess)
-                    .withFailureHandler(function(err) {
-                        Swal.fire('Erro', 'Não foi possível estabelecer ligação com a base de dados.', 'error');
-                        if(overlay) overlay.style.display = 'none';
-                    })
-                    .getSheetData();
-            } else {
-                // MODO DEMONSTRAÇÃO E TESTES: Usa dados gerados aleatoriamente
-                setTimeout(() => {
-                    const dadosMapeados = {
-                        "Assistência Social": [
-                            "Processo Acolhimento Crianças", "Acolhimento Idosos", "Acolhimento Moradores de Rua", 
-                            "Benefício Eventual - Calamidade Pública", "Benefício Eventual - Morte", "Benefício Eventual - Nascimento", 
-                            "Benefício Eventual - Vulnerabildade Temporária", "Denúncias", "Formalização de parcerias do terceiro setor", 
-                            "Prestação de Contas do Terceiro Setor", "Gestão do bolsa família - Bloqueio e Cancelamento", 
-                            "Gestão do bolsa família - Desbloqueio e Reversão de Cancelamento", "Gestão do Fluxo de Trabalho da Divisão Administrativa do SUAS",
-                            "Programa Rede 60+"
-                        ],
-                        "Saúde": [
-                            "Encaminhamento Médico na Especialidade", "Gestão de Consultas Especializadas", 
-                            "Atendimento Padrão na Atenção Primária - Médicos, Dentistas e Enfermeiros", "Efetuar Confirmação de Consulta - UBS", 
-                            "Efetuar Contato Com Paciente - UBS - Chatbox (Melhoria)", "Gestão de Vacinas", 
-                            "Implementação de Protocolos na Unidade de Pronto Atendimento (UPA) para Solicitação de Exame", 
-                            "2ª RODADA SAÚDE Protocolo Implanon", "2ª RODADA SAÚDE Protocolo de Atendimento Geriatríca", 
-                            "2ª RODADA SAÚDE Protocolo de Exames Terceirizados", "2ª RODADA SAÚDE Protocolo Fisioterapia", 
-                            "2ª RODADA SAÚDE Protocolo de Regulação do acesso a consultas e exames especializados", "2ª RODADA SAÚDE Protocolo EMAD",
-                            "Programa Mãe Olímpiense"
-                        ],
-                        "Inovação": [
-                            "Atendimento ao Cidadão – Procon", "Patrulha Agrícola Mecanizada", "Sandbox Regulatório Espontâneo", 
-                            "Análise de confrontação de áreas para emissão de Certidões e Declaração de Reconhecimento de Limites.", 
-                            "Cursos e Capacitações realizados pelo Sistema S", "Captação de Recursos e Parcerias", "Programa Olímpia + Empreendedora"
-                        ],
-                        "Esporte": [
-                            "Planejamento da Organização de Eventos e Competições Esportivas - Planejamento", 
-                            "Infraestrutura da Organização de Eventos e Competições Esportivas", "Operacionalização do Fundo do Esporte – Planejamento", 
-                            "Operacionalização do Fundo do Esporte – Execução", "Identificação e Vistoria dos Equipamentos e Infraestrutura esportiva", 
-                            "Conservação e Manutenção dos Equipamentos e Infraestrutura esportiva", "Utilização dos Equipamentos e Infraestrutura Esportiva"
-                        ],
-                        "Educação": [
-                            "Convocação e Atribuição de Aulas aos Professores", "Manutenção da Infraestrutura das Unidades Escolares", 
-                            "Gestão de Suprimentos Didáticos e Pedagógicos", "Gerenciar Demandas por vagas em creches", 
-                            "Gerenciar Atendimentos Educacionais Especializados"
-                        ],
-                        "Obras": [
-                            "Melhorias habitacionais – Reformas “habita+olímpia”", "Fiscalização de Obras Privadas", "Licenciamento Urbanístico de Loteamento", 
-                            "Análise do Estudo de Impacto de Vizinhança", "Gestão da Manutenção Predial", "Gerenciamento das Obras Públicas", "Execução de Obra não Predial",
-                            "Operacionalização de Emendas Parlamentares", "Programa Habita + Olímpia (04 eixos)"
-                        ],
-                        "Fundo Social": [
-                            "Benefícios Eventuais – Fórmula Infantil -Nutrir +", "Benefícios Eventuais – Suplemento Alimentar – Força Vital", 
-                            "Benefícios Eventuais – Projeto Novo Olhar", "Benefícios Eventuais – Atendimentos Emergenciais – Empréstimo de Equipamentos Hospitalares", 
-                            "Benefícios Eventuais – Brechó Solidário", "Estruturação do Processo Interno de Compras", 
-                            "Estruturação dos Cursos e Oficinas – Estaduais e Municipais"
-                        ],
-                        "Zeladoria e Meio Ambiente": [
-                            "Regulamentação do Processo de Doação de Insumo para uso Animal (Olímpia + Pet)", "Processo de Castração Animal", 
-                            "Regulamentação do Atendimento no Serviço de Acolhimento Animal", "Licenciamento Ambiental", "Fiscalização Ambiental", 
-                            "Gestão de Limpeza e Manutenção Urbana"
-                        ],
-                        "Segurança e Trânsito": [
-                            "Gestão de Ocorrências GCM", "Gestão de Infração de Trânsito", "Solicitação e Execução de Lombadas", 
-                            "Vistoria de Ocorrências - Defesa Civil", "Monitoramento e Fiscalização de Ocorrências - Defesa Civil", "Gestão de Eventos - Trânsito"
-                        ],
-                        "Casa Civil": [
-                            "Demandas e Melhorias Conecta +", "Gestão das Alienações Imobiliárias", 
-                            "Gestão dos Indicadores", "Gestão de Metas e Acompanhamento Estratégico", "Metodologia de Mapeamento de Processos", 
-                            "Programa Conecta + Olímpia", "Programa Olímpia + Movimento", "Programa Olímpia + Viva"
-                        ],
-                        "Controladoria": [
-                            "Gestão de Demandas Jurídicas - Processos Licitatórios", "Gestão dos Processos Administrativos Disciplinares", 
-                            "Processo de Elaboração e Publicação de Atos Oficiais", "Tema Sugerido: Gestão de Requisições do TCE Tema Apresentado: Realizar Compra Direta de Bens ou Serviços", 
-                            "Tema Sugerido: Adiantamento de Viagens Tema Apresentado: Pagamentos por Nota Fiscal", 
-                            "Tema Sugerido: Auditorias Internas Tema Apresentado: Pedido Por Estoque", 
-                            "Tema Sugerido: Convênios do Terceiro Setor Tema Apresentado: Processo SEI Interno"
-                        ]
-                    };
+            // O NOVO link oficial do seu Apps Script
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxpBtwl6xVJhAiYbwzGzG8k0mydOQZ2p8D6_DCgmE0aXGYVOYwAHYE4bwAwIyDEqSVxfQ/exec";
 
-                    let mockData = [];
-                    let countId = 1;
-
-                    for (const sec in dadosMapeados) {
-                        dadosMapeados[sec].forEach((proc, idx) => {
-                            let f = FASES_KANBAN[Math.floor(Math.random() * FASES_KANBAN.length)].id;
-                            let sugestao = (idx % 3 === 0) ? `Rever as etapas burocráticas do processo "${proc}" para ganhar agilidade.` : '';
-                            let proximaacao = (idx % 4 === 0) ? `Agendar reunião de validação da modelagem de ${proc} até sexta-feira.` : '';
-                            
-                            let data = new Date(2025, 4, 10 + Math.floor(Math.random()*20));
-                            
-                            let respTecnico = "Técnico(a) da " + sec;
-                            if (proc === "Operacionalização de Emendas Parlamentares") {
-                                respTecnico = "Alexandre Eloi da Costa";
-                            }
-
-                            mockData.push({
-                                id: `PRC-${String(countId++).padStart(3, '0')}`,
-                                processo: proc,
-                                divisao: "Divisão de Operações",
-                                responsaveltecnico: respTecnico,
-                                graudeimpacto: ["Alto", "Médio", "Baixo", "Crítico"][Math.floor(Math.random() * 4)],
-                                indicador: "Tempo Médio / Eficiência",
-                                formula: "Soma(Tempos)/Qtd",
-                                datadasolicitacaoreuniao: "10/01/2026",
-                                dataprevistadeentrega: data.toLocaleDateString('pt-PT'),
-                                datarealdeentrega: f === 'Concluído' ? "10/06/2026" : "-",
-                                diasdeatrasonaentrega: (Math.random() > 0.8) ? Math.floor(Math.random() * 10) : 0,
-                                numerodediasparaconclusao: "150",
-                                suporte: "TI / Jurídico",
-                                retabalho: "5%",
-                                statusgeral: f === 'Concluído' ? 'Encerrado' : ((Math.random() > 0.8) ? 'Atrasado' : 'Ativo'),
-                                secretaria: sec, // Nome da secretaria na base
-                                kanban: f, 
-                                sugestaodemelhoria: sugestao,
-                                proximaacao: proximaacao
-                            });
-                        });
-                    }
-                    handleDataSuccess(mockData);
-                }, 1000);
-            }
+            fetch(scriptURL)
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao contactar a planilha');
+                    return response.json();
+                })
+                .then(data => {
+                    handleDataSuccess(data);
+                })
+                .catch(error => {
+                    console.error("Erro API:", error);
+                    Swal.fire('Erro', 'Não foi possível ler os dados reais da sua planilha. Verifique a ligação.', 'error');
+                    if(overlay) overlay.style.display = 'none';
+                });
         }
 
         function handleDataSuccess(data) {

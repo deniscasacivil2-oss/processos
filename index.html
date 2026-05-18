@@ -631,14 +631,50 @@
 
             const processo = escapeHTML(getValorRobusto(item, ['processo', 'nome']) || 'Processo Sem Título');
             const secretaria = escapeHTML(getValorRobusto(item, ['secretaria', 'departamento']) || 'Geral');
-            const responsavel = escapeHTML(getValorRobusto(item, ['responsaveltecnico', 'responsavel']) || 'Não atribuído');
-            const fase = escapeHTML(getValorRobusto(item, ['kanban']) || 'N/A');
             const statusGeral = escapeHTML(getValorRobusto(item, ['statusgeraldoprocesso', 'statusgeral', 'status']) || 'N/A');
-            const dataPrevista = escapeHTML(getValorRobusto(item, ['dataprevistadeentrega', 'dataprevista', 'data']) || 'Sem data');
-            const objetivo = escapeHTML(getValorRobusto(item, ['objetivo', 'descricao', 'observacoes']) || 'Sem descrição detalhada.');
             const id = escapeHTML(getValorRobusto(item, ['id', 'codigo']) || '-');
             
             const statusInfo = getSemaforoColorInfo(item);
+            
+            // Colunas que já estão no cabeçalho do Modal e não precisam repetir
+            const keysToIgnoreModal = ['rowindex', '_id', 'secretaria', 'departamento', 'nome', 'processo', 'id', 'codigo', 'statusgeraldoprocesso', 'statusgeral', 'status'];
+
+            // Constrói os dados dinamicamente puxando TODAS as outras colunas da planilha
+            let detalhesHTML = '';
+            Object.keys(item).forEach(key => {
+                const normalizedKey = normalizarTexto(key).replace(/[^a-z0-9]/g, '');
+                
+                if (!keysToIgnoreModal.includes(normalizedKey) && item[key] !== null && item[key] !== undefined && item[key].toString().trim() !== "") {
+                    const label = escapeHTML(key.replace(/_/g, ' ').toUpperCase());
+                    const val = escapeHTML(item[key]);
+                    
+                    const isLongText = val.toString().length > 60 || label.includes('OBJETIVO') || label.includes('OBSERVA');
+                    const colSpanClass = isLongText ? 'col-span-1 md:col-span-2' : 'col-span-1';
+
+                    let boxBg = 'bg-slate-50';
+                    let boxBorder = 'border-slate-100';
+                    let textColor = 'text-slate-700';
+                    let labelColor = 'text-slate-500';
+
+                    if (normalizedKey.includes('prazo') || normalizedKey.includes('dataprevista') || normalizedKey.includes('datadeentrega') || normalizedKey.includes('diasdeatraso')) {
+                        boxBg = statusInfo.bg;
+                        boxBorder = statusInfo.border;
+                        textColor = statusInfo.text;
+                        labelColor = statusInfo.text; 
+                    }
+
+                    detalhesHTML += `
+                        <div class="p-3 rounded border ${boxBorder} ${boxBg} ${colSpanClass}">
+                            <p class="text-[8px] font-black ${labelColor} uppercase tracking-wider mb-1">${label}</p>
+                            <p class="text-xs font-bold ${textColor} leading-relaxed">${val}</p>
+                        </div>
+                    `;
+                }
+            });
+
+            if(detalhesHTML === '') {
+                detalhesHTML = `<p class="text-xs text-slate-400 italic col-span-2">Nenhum dado adicional preenchido na planilha.</p>`;
+            }
             
             const htmlContent = `
                 <div class="text-left font-sans text-sm text-slate-700 space-y-4 mt-2">
@@ -653,24 +689,11 @@
                         </span>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-50 p-3 rounded border border-slate-100">
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Fase Kanban</p>
-                            <p class="text-xs font-bold text-slate-800">${fase}</p>
+                    <div class="mt-4">
+                        <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3"><i class="fa-solid fa-list-check mr-1"></i> Detalhes do Processo</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${detalhesHTML}
                         </div>
-                        <div class="p-3 rounded border ${statusInfo.border} ${statusInfo.bg}">
-                            <p class="text-[8px] font-black ${statusInfo.text} uppercase tracking-wider mb-1">Data Prevista</p>
-                            <p class="text-xs font-bold ${statusInfo.text}"><i class="fa-regular fa-calendar mr-1"></i> ${dataPrevista}</p>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded border border-slate-100 col-span-2">
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Responsável Técnico</p>
-                            <p class="text-xs font-bold text-slate-800">${responsavel}</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded border border-slate-100 mt-4">
-                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Objetivo / Resumo</p>
-                        <p class="text-xs text-slate-600 leading-relaxed">${objetivo}</p>
                     </div>
                 </div>
             `;
@@ -680,7 +703,7 @@
                 html: htmlContent,
                 showCloseButton: true,
                 showConfirmButton: false,
-                width: '600px',
+                width: '650px',
                 customClass: { popup: 'rounded-xl shadow-2xl' }
             });
         };
@@ -892,7 +915,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 `;
 
-                const keysToIgnore = ['rowindex', '_id', 'secretaria', 'departamento', 'nome', 'processo', 'id', 'codigo', 'status', 'kanban', 'kanbanstatus', 'sugestaodemelhoria', 'proximaacao'];
+                // Aqui removemos o Kanban da lista de ignorados, e garantimos que a sugestão e a próxima ação são ocultadas
+                const keysToIgnore = ['rowindex', '_id', 'secretaria', 'departamento', 'nome', 'processo', 'id', 'codigo', 'statusgeraldoprocesso', 'statusgeral', 'status', 'sugestaodemelhoria', 'proximaacao'];
 
                 Object.keys(p).forEach(key => {
                     const normalizedKey = normalizarTexto(key).replace(/[^a-z0-9]/g, '');

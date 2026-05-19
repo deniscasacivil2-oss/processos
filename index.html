@@ -373,34 +373,58 @@
             return '';
         }
 
+        function getFaseKanban(item) {
+            // Procura a fase nas colunas mais comuns que o utilizador possa ter criado
+            const valor = getValorRobusto(item, ['kanban', 'fase', 'etapa', 'status', 'statuskanban', 'fasekanban']);
+            const txtNorm = normalizarTexto(valor);
+            
+            if (!txtNorm) return 'A Iniciar'; 
+
+            // Mapeamento inteligente por palavras-chave (tolerante a erros de digitação e nomes ligeiramente diferentes)
+            if (txtNorm.includes('iniciar') || txtNorm.includes('inicio') || txtNorm.includes('pendente') || txtNorm.includes('nao iniciado')) return 'A Iniciar';
+            if (txtNorm.includes('as is') || txtNorm.includes('correcao')) return 'Correção AS IS';
+            if (txtNorm.includes('validar') || txtNorm.includes('validacao') || txtNorm.includes('aguardando')) return 'Aguardando Validação';
+            if (txtNorm.includes('elaboracao') || txtNorm.includes('desenho') || txtNorm.includes('modelagem')) return 'BPMN em Elaboração';
+            if (txtNorm.includes('revisao') || txtNorm.includes('revisar')) return 'BPMN Revisão';
+            if (txtNorm.includes('diagnostico') || txtNorm.includes('melhoria')) return 'Diagnóstico de Melhoria';
+            if (txtNorm.includes('concluido') || txtNorm.includes('finalizado') || txtNorm.includes('entregue') || txtNorm.includes('encerrado')) return 'Concluído';
+
+            return 'A Iniciar'; // Fallback seguro
+        }
+
         function renderSecretariasMenu() {
             const menuContainer = document.getElementById('dynamic-secretarias-menu');
             if (!menuContainer) return;
-            menuContainer.innerHTML = '';
-
+            
             const secretariasUnicas = new Set();
             
             window.allData.forEach(d => {
-                let sec = getValorRobusto(d, ['secretaria', 'departamento']);
-                if (sec && sec.toString().trim() !== '') {
+                const sec = getValorRobusto(d, ['secretaria', 'departamento']);
+                if (sec && sec.toString().trim() !== "") {
                     secretariasUnicas.add(sec.toString().trim());
                 }
             });
-
-            const sortedSecs = Array.from(secretariasUnicas).sort();
-            sortedSecs.forEach(sec => {
-                const a = document.createElement('a');
-                a.className = 'submenu-link';
-                a.onclick = () => viewSecretaria(sec);
-                a.innerText = sec; 
-                menuContainer.appendChild(a);
+            
+            const sortedSecretarias = Array.from(secretariasUnicas).sort();
+            
+            let html = '';
+            sortedSecretarias.forEach(sec => {
+                const secEscaped = escapeHTML(sec);
+                const clickSec = secEscaped.replace(/'/g, "\\'"); // Garante que aspas simples não partem o código
+                html += `<a class="submenu-link" onclick="viewSecretaria('${clickSec}')">${secEscaped}</a>`;
             });
+            
+            if (html === '') {
+                html = `<span class="submenu-link text-gray-400 italic">Nenhuma secretaria listada</span>`;
+            }
+            
+            menuContainer.innerHTML = html;
         }
 
         function getSemaforoColorInfo(item) {
-            const fase = normalizarTexto(getValorRobusto(item, ['kanban']));
+            const fase = getFaseKanban(item);
             const statusStr = normalizarTexto(getValorRobusto(item, ['statusgeraldoprocesso', 'statusgeral', 'status']));
-            const isConcluido = fase === 'concluido' || statusStr.includes('concluido') || statusStr.includes('encerrado');
+            const isConcluido = fase === 'Concluído' || statusStr.includes('concluido') || statusStr.includes('encerrado');
 
             if (isConcluido) return { bg: 'bg-green-100', border: 'border-green-400', text: 'text-green-800', dot: 'bg-green-500' };
 
@@ -532,11 +556,7 @@
             `;
             
             FASES_KANBAN.forEach((fase, i) => {
-                const items = window.allData.filter(d => {
-                    const kanbanStatus = getValorRobusto(d, ['kanban']);
-                    if (!kanbanStatus && fase.id === 'A Iniciar') return true; 
-                    return normalizarTexto(kanbanStatus) === normalizarTexto(fase.id);
-                });
+                const items = window.allData.filter(d => getFaseKanban(d) === fase.id);
                 
                 const pct = totalProcessos > 0 ? Math.round((items.length / totalProcessos) * 100) : 0;
 
@@ -598,11 +618,7 @@
                 titulo = 'Todos os Processos';
                 subtitulo = 'Lista completa de todos os fluxos na base de dados';
             } else {
-                filtered = window.allData.filter(d => {
-                    const kanbanStatus = getValorRobusto(d, ['kanban']);
-                    if (!kanbanStatus && faseId === 'A Iniciar') return true; 
-                    return normalizarTexto(kanbanStatus) === normalizarTexto(faseId);
-                });
+                filtered = window.allData.filter(d => getFaseKanban(d) === faseId);
                 titulo = `Fase: ${escapeHTML(faseId)}`;
                 subtitulo = `Processos atualmente na fase de ${escapeHTML(faseId)}`;
             }
@@ -742,10 +758,9 @@
             const secCounts = {};
 
             window.allData.forEach(d => {
-                let status = normalizarTexto(getValorRobusto(d, ['kanban']));
+                let faseAtribuida = getFaseKanban(d);
                 let sec = getValorRobusto(d, ['secretaria', 'departamento']) || 'Não Informada';
-                let faseEncontrada = FASES_KANBAN.find(f => normalizarTexto(f.id) === status) || FASES_KANBAN[0];
-                statusCounts[faseEncontrada.id] = (statusCounts[faseEncontrada.id] || 0) + 1;
+                statusCounts[faseAtribuida] = (statusCounts[faseAtribuida] || 0) + 1;
                 secCounts[sec] = (secCounts[sec] || 0) + 1;
             });
 

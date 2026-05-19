@@ -326,8 +326,12 @@
 
         function handleDataSuccess(data) {
             window.allData = (data || []).filter(d => {
-                const keys = Object.keys(d).filter(k => k !== 'row_index' && k !== '_id');
-                return keys.some(k => d[k] !== null && d[k] !== undefined && d[k].toString().trim() !== "");
+                // Tenta encontrar o nome do processo nesta linha
+                const nomeProcesso = getValorRobusto(d, ['processo', 'nome']);
+                
+                // Só mantém a linha no painel se houver um nome de processo preenchido.
+                // Isto elimina todas as "linhas fantasmas" vazias que vêm do Sheets.
+                return nomeProcesso && nomeProcesso.toString().trim() !== "";
             });
 
             renderAll();

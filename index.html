@@ -273,11 +273,9 @@
 
         const FASES_KANBAN = [
             { id: 'A Iniciar', cor_bg: '#3b82f6', icone: 'fa-file-lines' },
-            { id: 'Correção AS IS', cor_bg: '#f59e0b', icone: 'fa-pen' },
+            { id: 'Elaborar', cor_bg: '#8b5cf6', icone: 'fa-sitemap' },
+            { id: 'Em Andamento', cor_bg: '#0ea5e9', icone: 'fa-bars-progress' },
             { id: 'Aguardando Validação', cor_bg: '#f97316', icone: 'fa-users' },
-            { id: 'BPMN em Elaboração', cor_bg: '#0ea5e9', icone: 'fa-sitemap' },
-            { id: 'BPMN Revisão', cor_bg: '#8b5cf6', icone: 'fa-magnifying-glass' },
-            { id: 'Diagnóstico de Melhoria', cor_bg: '#14b8a6', icone: 'fa-shield-halved' },
             { id: 'Concluído', cor_bg: '#22c55e', icone: 'fa-trophy' }
         ];
 
@@ -348,6 +346,36 @@
             renderProximasAcoes();
         }
 
+        function renderSecretariasMenu() {
+            const container = document.getElementById('dynamic-secretarias-menu');
+            if (!container) return;
+
+            // Puxa todas as secretarias únicas dos dados reais
+            const secretariasUnicas = new Set();
+            window.allData.forEach(d => {
+                let sec = getValorRobusto(d, ['secretaria', 'departamento']);
+                if (sec && sec.toString().trim() !== '') {
+                    secretariasUnicas.add(sec.toString().trim());
+                }
+            });
+
+            // Ordena alfabeticamente
+            const secretariasArray = Array.from(secretariasUnicas).sort();
+
+            let html = '';
+            if (secretariasArray.length === 0) {
+                html = '<span class="text-xs text-gray-500 px-4 italic">Nenhuma secretaria</span>';
+            } else {
+                secretariasArray.forEach(sec => {
+                    const secEscaped = escapeHTML(sec);
+                    // O replace("\\'") previne erros se a secretaria tiver apóstrofos no nome
+                    html += `<a class="submenu-link" onclick="viewSecretaria('${secEscaped.replace(/'/g, "\\'")}')">${secEscaped}</a>`;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
         function normalizarTexto(str) {
             if (str === null || str === undefined) return "";
             return str.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
@@ -374,51 +402,19 @@
         }
 
         function getFaseKanban(item) {
-            // Procura a fase nas colunas mais comuns que o utilizador possa ter criado
-            const valor = getValorRobusto(item, ['kanban', 'fase', 'etapa', 'status', 'statuskanban', 'fasekanban']);
+            const valor = getValorRobusto(item, ['kanban', 'fasekanban', 'fase', 'etapa', 'statuskanban', 'status']);
             const txtNorm = normalizarTexto(valor);
             
             if (!txtNorm) return 'A Iniciar'; 
 
-            // Mapeamento inteligente por palavras-chave (tolerante a erros de digitação e nomes ligeiramente diferentes)
-            if (txtNorm.includes('iniciar') || txtNorm.includes('inicio') || txtNorm.includes('pendente') || txtNorm.includes('nao iniciado')) return 'A Iniciar';
-            if (txtNorm.includes('as is') || txtNorm.includes('correcao')) return 'Correção AS IS';
-            if (txtNorm.includes('validar') || txtNorm.includes('validacao') || txtNorm.includes('aguardando')) return 'Aguardando Validação';
-            if (txtNorm.includes('elaboracao') || txtNorm.includes('desenho') || txtNorm.includes('modelagem')) return 'BPMN em Elaboração';
-            if (txtNorm.includes('revisao') || txtNorm.includes('revisar')) return 'BPMN Revisão';
-            if (txtNorm.includes('diagnostico') || txtNorm.includes('melhoria')) return 'Diagnóstico de Melhoria';
-            if (txtNorm.includes('concluido') || txtNorm.includes('finalizado') || txtNorm.includes('entregue') || txtNorm.includes('encerrado')) return 'Concluído';
+            // Se for concluído, agora tem uma coluna própria no Kanban
+            if (txtNorm.includes('conclui') || txtNorm.includes('entreg') || txtNorm.includes('encerr')) return 'Concluído';
+            
+            if (txtNorm.includes('elabora')) return 'Elaborar';
+            if (txtNorm.includes('andamento') || txtNorm.includes('execucao')) return 'Em Andamento';
+            if (txtNorm.includes('valid') || txtNorm.includes('aguardando') || txtNorm.includes('aprovacao')) return 'Aguardando Validação';
 
             return 'A Iniciar'; // Fallback seguro
-        }
-
-        function renderSecretariasMenu() {
-            const menuContainer = document.getElementById('dynamic-secretarias-menu');
-            if (!menuContainer) return;
-            
-            const secretariasUnicas = new Set();
-            
-            window.allData.forEach(d => {
-                const sec = getValorRobusto(d, ['secretaria', 'departamento']);
-                if (sec && sec.toString().trim() !== "") {
-                    secretariasUnicas.add(sec.toString().trim());
-                }
-            });
-            
-            const sortedSecretarias = Array.from(secretariasUnicas).sort();
-            
-            let html = '';
-            sortedSecretarias.forEach(sec => {
-                const secEscaped = escapeHTML(sec);
-                const clickSec = secEscaped.replace(/'/g, "\\'"); // Garante que aspas simples não partem o código
-                html += `<a class="submenu-link" onclick="viewSecretaria('${clickSec}')">${secEscaped}</a>`;
-            });
-            
-            if (html === '') {
-                html = `<span class="submenu-link text-gray-400 italic">Nenhuma secretaria listada</span>`;
-            }
-            
-            menuContainer.innerHTML = html;
         }
 
         function getSemaforoColorInfo(item) {

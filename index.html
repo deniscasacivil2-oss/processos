@@ -3,165 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divisão de Governança, Processos e Projetos Estratégicos</title>
+    <title>Gestão de Processos | Município de Olímpia</title>
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; overflow: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow: hidden; }
         
-        .sidebar-bg { background-color: #0b1f3f; } 
+        .sidebar { background-color: #003366; }
+        .text-navy { color: #003366; }
+        .bg-navy { background-color: #003366; }
         
-        .card { background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
-        .card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15); border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { border-color: #cbd5e1; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
         
-        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #cbd5e1; margin: 0 12px; padding: 12px; }
-        .nav-link:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
-        .nav-link.active { background-color: #eab308; color: #0f172a !important; font-weight: 800; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3); }
+        .nav-link { transition: all 0.2s; border-radius: 8px; cursor: pointer; color: #dbeafe; padding: 12px; margin: 0 12px; }
+        .nav-link:hover { background-color: #1e40af; color: #ffffff; }
+        .nav-link.active { background-color: #ffb800; color: #003366 !important; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3); }
         
         .submenu-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease-out; }
         .submenu-wrapper.open { grid-template-rows: 1fr; }
         .submenu-inner { overflow: hidden; }
         .submenu-link { 
-            display: block; padding: 8px 12px 8px 48px; font-size: 10px; color: #94a3b8; 
-            text-transform: uppercase; font-weight: 600; cursor: pointer;
+            display: block; padding: 8px 12px 8px 48px; font-size: 11px; color: #93c5fd; 
+            text-transform: uppercase; font-weight: 500; cursor: pointer;
             transition: all 0.2s; margin: 0 12px; border-radius: 6px;
         }
-        .submenu-link:hover { color: #eab308; background-color: rgba(255, 255, 255, 0.05); }
+        .submenu-link:hover { color: #ffb800; background-color: rgba(255, 255, 255, 0.05); }
 
         .section-content { display: none; }
         .section-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        .logo-container img { object-fit: contain; }
+
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #f8fafc; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999; color: #334155;
+            background: #f1f5f9; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999; color: #003366;
         }
 
-        .kpi-title { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-        .kpi-value { font-size: 18px; font-weight: 700; color: #1e293b; }
+        .kanban-kpi-card { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .kanban-kpi-icon { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; }
+        .kanban-col-wrapper { min-width: 240px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .kanban-header { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; gap: 8px; color: #ffffff; }
+        .kanban-header-count { background: rgba(0,0,0,0.25); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 800; }
         
-        .kanban-kpi-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .kanban-kpi-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
-        .kanban-col-wrapper { min-width: 210px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .kanban-header { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; color: #ffffff; }
-        .kanban-header-count { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 12px; font-size: 10px; font-weight: 900; }
-        
-        .kanban-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; font-size: 11px; display: flex; flex-direction: column; gap: 6px; transition: transform 0.2s; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: #334155; }
-        .kanban-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+        .kanban-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; transition: transform 0.2s; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); color: #1e293b; }
+        .kanban-card:hover { transform: translateY(-3px); border-color: #cbd5e1; box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
         .semaforo-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-        .vg-kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-top: 3px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .vg-kpi-card .vg-val { font-size: 24px; font-weight: 900; color: #1e293b; line-height: 1.2; }
-        .vg-kpi-card .vg-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
-        .vg-chart-title { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; margin-bottom: 12px; }
+        .vg-kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #003366; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .vg-kpi-card .vg-val { font-size: 28px; font-weight: 800; color: #003366; line-height: 1.2; }
+        .vg-kpi-card .vg-label { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+        .vg-chart-title { font-size: 12px; font-weight: 700; color: #003366; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; margin-bottom: 12px; }
+
+        .font-poppins { font-family: 'Poppins', sans-serif !important; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="flex min-h-screen overflow-hidden">
 
     <div id="loading-overlay">
-        <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
-        <p class="text-sm font-bold uppercase tracking-widest text-slate-600">A processar dados...</p>
+        <i class="fa-solid fa-spinner fa-spin text-5xl mb-4 text-[#003366]"></i>
+        <h2 class="text-xl font-bold uppercase tracking-widest text-[#003366]">A Processar Dados</h2>
+        <p class="text-sm text-gray-500 mt-2 font-medium">Sincronizando com a base do Google Sheets...</p>
     </div>
 
-    <aside id="sidebar" class="sidebar-bg text-slate-300 flex-shrink-0 transition-all duration-300 w-72 h-screen z-50 overflow-hidden relative shadow-xl">
-        <div class="w-72 flex flex-col h-full absolute top-0 left-0">
-            <div class="p-6 border-b border-white/10 flex flex-col items-center justify-center text-center gap-3">
-                <div class="shrink-0 drop-shadow-md">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Bras%C3%A3o_de_Ol%C3%ADmpia%2C_SP.jpg" alt="Brasão de Olímpia" class="h-24" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2RjMjYyNiIvPjwvc3ZnPg=='">
+    <aside id="sidebar" class="sidebar text-white flex-shrink-0 flex flex-col transition-all duration-300 w-64 overflow-hidden h-screen sticky top-0 z-50 shadow-xl">
+        <div class="flex flex-col h-full absolute top-0 left-0 w-64">
+            <div class="p-6 text-center border-b border-blue-900/50">
+                <div class="bg-white p-2 rounded-lg mb-4 inline-block logo-container shadow-lg">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Bras%C3%A3o_de_Ol%C3%ADmpia%2C_SP.jpg" alt="Brasão de Olímpia" class="h-16">
                 </div>
-                <div>
-                    <h2 class="text-sm font-bold tracking-widest uppercase text-white">Gestão de</h2>
-                    <p class="text-xs text-yellow-400 mt-0.5 font-black uppercase tracking-wider">Processos</p>
-                </div>
+                <h2 class="text-[10px] font-bold tracking-widest uppercase text-blue-100 leading-tight px-2">Gestão de Processos</h2>
             </div>
             
-            <nav class="flex-grow py-4 space-y-1 overflow-y-auto">
-                <button onclick="changeSection('visao-geral', 'Análise de Resultados')" class="nav-link w-[calc(100%-24px)] flex items-center active" id="nav-visao-geral">
+            <nav class="flex-grow py-4 space-y-2 overflow-y-auto no-scrollbar">
+                <button onclick="changeSection('visao-geral', 'Visão Geral dos Resultados')" class="nav-link w-[calc(100%-24px)] flex items-center active" id="nav-visao-geral">
                     <i class="fa-solid fa-scale-balanced w-6 text-center"></i>
-                    <span class="text-[11px] uppercase ml-3">Visão Geral</span>
+                    <span class="text-[11px] uppercase ml-3 font-medium tracking-wider">Visão Geral</span>
                 </button>
                 <button onclick="changeSection('status', 'Acompanhamento de Processos')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-status">
                     <i class="fa-solid fa-layer-group w-6 text-center"></i>
-                    <span class="text-[11px] uppercase ml-3">Status</span>
+                    <span class="text-[11px] uppercase ml-3 font-medium tracking-wider">Status</span>
                 </button>
                 <button onclick="changeSection('sugestoes', 'Sugestão de Melhorias')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-sugestoes">
                     <i class="fa-solid fa-lightbulb w-6 text-center"></i>
-                    <span class="text-[11px] uppercase ml-3">Sugestão de Melhorias</span>
+                    <span class="text-[11px] uppercase ml-3 font-medium tracking-wider">Sugestões</span>
                 </button>
-                <button onclick="changeSection('proxima-acao', 'Próximas Ações')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-proxima-acao">
+                <button onclick="changeSection('proxima-acao', 'Plano de Próximas Ações')" class="nav-link w-[calc(100%-24px)] flex items-center" id="nav-proxima-acao">
                     <i class="fa-solid fa-calendar-check w-6 text-center"></i>
-                    <span class="text-[11px] uppercase ml-3">Próxima Ação</span>
+                    <span class="text-[11px] uppercase ml-3 font-medium tracking-wider">Próximas Ações</span>
                 </button>
 
-                <div class="mt-4 pt-4 border-t border-white/10">
+                <div class="mt-4 pt-4 border-t border-blue-900/50">
                     <button onclick="toggleAccordion('sec-dropdown')" class="nav-link w-[calc(100%-24px)] flex items-center group">
                         <i class="fa-solid fa-building-columns w-6 text-center"></i>
-                        <span class="text-[11px] uppercase ml-3 flex-1 text-left">Secretarias</span>
+                        <span class="text-[11px] uppercase ml-3 flex-1 text-left font-medium tracking-wider">Secretarias</span>
                         <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300" id="icon-sec-dropdown"></i>
                     </button>
                     <div id="sec-dropdown-wrapper" class="submenu-wrapper">
-                        <!-- O menu de secretarias será preenchido fielmente via JavaScript com base nos dados -->
                         <div class="submenu-inner pt-1 pb-2" id="dynamic-secretarias-menu">
+                            <!-- Preenchido via JS -->
                         </div>
                     </div>
                 </div>
             </nav>
 
-            <div class="p-4 bg-black/20 text-[9px] border-t border-white/10 flex flex-col items-center text-center gap-1">
-                <p class="font-bold text-blue-200 uppercase tracking-wider">Divisão de Governança e Processos</p>
-                <p class="text-blue-300">Casa Civil | Município de Olímpia - SP</p>
+            <div class="p-5 bg-[#002244] text-[9px] text-blue-300 mt-auto border-t border-blue-900/50 text-center">
+                <p class="font-bold uppercase tracking-wider text-blue-200">Div. de Governança e Processos</p>
+                <p class="mt-1">Casa Civil | Município de Olímpia - SP</p>
             </div>
         </div>
     </aside>
 
-    <main class="flex-grow flex flex-col min-w-0 w-full h-screen overflow-hidden bg-slate-50 relative">
-        <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 z-40 shadow-sm">
+    <main class="flex-grow flex flex-col min-w-0 w-full h-screen overflow-hidden relative">
+        <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 md:px-8 shrink-0 z-40 shadow-sm">
             <div class="flex items-center space-x-4">
-                <button onclick="toggleSidebar()" class="text-slate-400 hover:text-slate-700 p-2 transition-colors">
+                <button onclick="toggleSidebar()" class="text-navy hover:text-blue-600 transition-colors focus:outline-none p-2 rounded-lg hover:bg-gray-100">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <div class="flex flex-col">
-                    <h1 id="page-title" class="text-sm font-black text-slate-800 uppercase tracking-wide">Análise de Resultados</h1>
+                    <h1 id="page-title" class="text-lg md:text-xl font-bold text-navy uppercase tracking-tight">Visão Geral dos Resultados</h1>
                 </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="bg-blue-100 text-navy px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest hidden md:inline-block">Ano 2026</span>
+                <div class="h-8 w-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-gray-200" title="Perfil de Utilizador">OP</div>
             </div>
         </header>
 
-        <div class="flex-grow overflow-y-auto p-4 md:p-6 pb-24" id="main-content">
+        <div class="flex-grow overflow-y-auto p-4 md:p-8 pb-24" id="main-content">
             
             <section id="sec-visao-geral" class="section-content active">
                 <div class="max-w-[1800px] mx-auto space-y-6">
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3" id="vg-kpis"></div>
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4" id="vg-kpis"></div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="card p-6 h-[450px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Secretaria</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="vgChartSecretarias"></canvas></div>
                         </div>
-                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
+                        <div class="card p-6 h-[450px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Grau de Impacto</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="vgChartImpacto"></canvas></div>
                         </div>
-                        <div class="card p-5 h-[320px] flex flex-col lg:col-span-4">
+                        <div class="card p-6 h-[450px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Status Geral</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="vgChartStatus"></canvas></div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                        <div class="card p-5 h-[350px] flex flex-col lg:col-span-8">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="card p-6 h-[550px] flex flex-col lg:col-span-8">
                             <h4 class="vg-chart-title">Evolução de Entregas (Projeção Mensal)</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="vgChartEvolucao"></canvas></div>
                         </div>
-                        <div class="card p-5 h-[350px] flex flex-col lg:col-span-4">
+                        <div class="card p-6 h-[550px] flex flex-col lg:col-span-4">
                             <h4 class="vg-chart-title">Processos por Responsável</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="vgChartResponsavel"></canvas></div>
                         </div>
@@ -171,40 +186,42 @@
 
             <section id="sec-status" class="section-content">
                 <div class="max-w-[1800px] mx-auto space-y-6">
-                    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3" id="kanban-kpis"></div>
-                    <div class="flex gap-4 overflow-x-auto pb-6" id="kanban-board">
-                        <div class="w-full text-center py-32 text-slate-400 uppercase font-black tracking-widest">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4" id="kanban-kpis"></div>
+                    
+                    <div class="flex gap-5 overflow-x-auto pb-6 pt-2 px-1" id="kanban-board">
+                        <div class="w-full text-center py-32 text-gray-400 uppercase font-black tracking-widest">
                             A sincronizar dados...
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-4">
-                        <div class="card p-5 h-72 flex flex-col">
-                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Processos por Status</h4>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-4">
+                        <div class="card p-6 h-[400px] flex flex-col">
+                            <h4 class="text-[11px] font-bold uppercase text-navy tracking-widest mb-4 text-center">Processos por Status</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartDonut"></canvas></div>
                         </div>
-                        <div class="card p-5 h-72 flex flex-col lg:col-span-1">
-                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Evolução</h4>
+                        <div class="card p-6 h-[400px] flex flex-col lg:col-span-1">
+                            <h4 class="text-[11px] font-bold uppercase text-navy tracking-widest mb-4 text-center">Evolução</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartLine"></canvas></div>
                         </div>
-                        <div class="card p-5 h-72 flex flex-col lg:col-span-1">
-                            <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-2 text-center">Volume por Fase e Secretaria</h4>
+                        <div class="card p-6 h-[400px] flex flex-col lg:col-span-1">
+                            <h4 class="text-[11px] font-bold uppercase text-navy tracking-widest mb-4 text-center">Volume por Fase</h4>
                             <div class="flex-1 relative w-full h-full"><canvas id="kanbanChartBarHoriz"></canvas></div>
                         </div>
-                        <div class="card p-5 h-72 flex flex-col justify-between">
+                        <div class="card p-6 h-[400px] flex flex-col justify-between">
                             <div>
-                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-4">Semáforo de Prazo</h4>
-                                <ul class="space-y-3 text-xs text-slate-600">
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-blue-500 mt-1 shrink-0"></span><span><strong>Em andamento:</strong> dentro do prazo</span></li>
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-green-500 mt-1 shrink-0"></span><span><strong>Entregue:</strong> processo concluído</span></li>
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-yellow-500 mt-1 shrink-0"></span><span><strong>Atenção:</strong> até 5 dias de atraso</span></li>
-                                    <li class="flex items-start gap-3"><span class="semaforo-dot bg-red-500 mt-1 shrink-0"></span><span><strong>Crítico:</strong> mais de 5 dias de atraso</span></li>
+                                <h4 class="text-[11px] font-bold uppercase text-navy tracking-widest mb-5">Semáforo de Prazo</h4>
+                                <ul class="space-y-4 text-sm text-gray-600">
+                                    <li class="flex items-center gap-3"><span class="semaforo-dot bg-blue-500 shrink-0"></span><span><strong>Em andamento:</strong> no prazo</span></li>
+                                    <li class="flex items-center gap-3"><span class="semaforo-dot bg-green-500 shrink-0"></span><span><strong>Entregue:</strong> concluído</span></li>
+                                    <li class="flex items-center gap-3"><span class="semaforo-dot bg-yellow-500 shrink-0"></span><span><strong>Atenção:</strong> até 5 dias atraso</span></li>
+                                    <li class="flex items-center gap-3"><span class="semaforo-dot bg-red-500 shrink-0"></span><span><strong>Crítico:</strong> > 5 dias atraso</span></li>
                                 </ul>
                             </div>
-                            <div class="mt-4 pt-4 border-t border-slate-200">
-                                <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3">Legenda</h4>
-                                <ul class="space-y-2 text-xs text-slate-600">
-                                    <li class="flex items-center gap-2"><i class="fa-regular fa-calendar text-slate-400 w-4"></i> Prazo estimado</li>
-                                    <li class="flex items-center gap-2"><span class="semaforo-dot bg-orange-500 shrink-0 mx-1"></span> Estado do Processo</li>
+                            <div class="mt-4 pt-5 border-t border-gray-200">
+                                <h4 class="text-[10px] font-bold uppercase text-gray-500 tracking-widest mb-3">Legenda do Cartão</h4>
+                                <ul class="space-y-2 text-xs text-gray-500">
+                                    <li class="flex items-center gap-2"><i class="fa-regular fa-calendar text-gray-400 w-4 text-center"></i> Prazo estimado</li>
+                                    <li class="flex items-center gap-2"><span class="semaforo-dot bg-orange-500 shrink-0 mx-1"></span> Estado atual</li>
                                 </ul>
                             </div>
                         </div>
@@ -213,10 +230,10 @@
             </section>
 
             <section id="sec-sugestoes" class="section-content">
-                <div class="max-w-[1600px] mx-auto py-10">
-                    <div class="space-y-4">
-                        <h3 class="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
-                            <i class="fa-solid fa-list-ul"></i> Sugestões de Melhorias Registadas na Planilha
+                <div class="max-w-[1600px] mx-auto py-6">
+                    <div class="card p-8 space-y-4">
+                        <h3 class="text-sm font-bold uppercase text-navy tracking-widest flex items-center gap-2 border-b border-gray-100 pb-4">
+                            <i class="fa-solid fa-list-ul text-blue-500"></i> Sugestões de Melhorias Registadas
                         </h3>
                         <div id="lista-sugestoes-registadas" class="mt-4"></div>
                     </div>
@@ -224,19 +241,21 @@
             </section>
 
             <section id="sec-proxima-acao" class="section-content">
-                <div class="max-w-[1600px] mx-auto py-10 text-center" id="sec-proxima-acao-content">
-                    <i class="fa-solid fa-calendar-days text-6xl text-blue-500/20 mb-6"></i>
-                    <h2 class="text-xl font-black uppercase tracking-wider text-slate-800">Plano de Próximas Ações</h2>
-                    <div id="lista-proximas-acoes" class="mt-8 text-left"></div>
+                <div class="max-w-[1600px] mx-auto py-6 text-center" id="sec-proxima-acao-content">
+                    <i class="fa-solid fa-calendar-days text-6xl text-blue-500/20 mb-6 mt-10"></i>
+                    <h2 class="text-2xl font-black uppercase tracking-wider text-navy mb-8">Plano de Próximas Ações</h2>
+                    <div class="card p-6 text-left">
+                        <div id="lista-proximas-acoes"></div>
+                    </div>
                 </div>
             </section>
 
             <section id="sec-secretaria-detalhe" class="section-content">
-                <div class="max-w-[1600px] mx-auto space-y-6">
-                    <div class="card p-6 border-l-4 border-blue-500 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="max-w-[1600px] mx-auto space-y-6 pt-2">
+                    <div class="card p-6 border-l-8 border-l-[#ffb800] flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
                         <div>
-                            <h2 class="text-2xl font-black text-slate-800 uppercase" id="sec-title">Secretaria</h2>
-                            <p class="text-slate-500 text-sm font-medium uppercase tracking-wider">Detalhamento Completo de Processos</p>
+                            <h2 class="text-2xl font-black text-navy uppercase tracking-tight" id="sec-title">Secretaria</h2>
+                            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider mt-1">Detalhamento Completo de Processos</p>
                         </div>
                         <div class="flex gap-2" id="sec-quick-stats"></div>
                     </div>
@@ -263,6 +282,9 @@
         ];
 
         window.onload = function() {
+            // Aplica a fonte Poppins globalmente no Chart.js
+            Chart.defaults.font.family = "'Poppins', sans-serif";
+            Chart.defaults.color = '#64748b';
             refreshData();
         };
 
@@ -279,7 +301,7 @@
             const overlay = document.getElementById('loading-overlay');
             if(overlay) overlay.style.display = 'flex';
             
-            // O NOVO link oficial do seu Apps Script
+            // O seu link oficial e atualizado do Apps Script
             const scriptURL = "https://script.google.com/macros/s/AKfycbxpBtwl6xVJhAiYbwzGzG8k0mydOQZ2p8D6_DCgmE0aXGYVOYwAHYE4bwAwIyDEqSVxfQ/exec";
 
             fetch(scriptURL)
@@ -292,7 +314,12 @@
                 })
                 .catch(error => {
                     console.error("Erro API:", error);
-                    Swal.fire('Erro', 'Não foi possível ler os dados reais da sua planilha. Verifique a ligação.', 'error');
+                    Swal.fire({
+                        title: 'Erro de Conexão',
+                        text: 'Não foi possível ler os dados reais da sua planilha. Verifique a ligação.',
+                        icon: 'error',
+                        customClass: { popup: 'font-poppins rounded-xl' }
+                    });
                     if(overlay) overlay.style.display = 'none';
                 });
         }
@@ -309,7 +336,7 @@
         }
 
         function renderAll() {
-            renderSecretariasMenu(); // Preenche o menu com as secretarias reais
+            renderSecretariasMenu(); 
             renderVisaoGeral(); 
             renderKanban();
             renderKanbanDashboard();
@@ -349,7 +376,6 @@
 
             const secretariasUnicas = new Set();
             
-            // Busca todas as secretarias únicas existentes nos dados reais
             window.allData.forEach(d => {
                 let sec = getValorRobusto(d, ['secretaria', 'departamento']);
                 if (sec && sec.toString().trim() !== '') {
@@ -357,13 +383,12 @@
                 }
             });
 
-            // Ordena alfabeticamente e cria os links
             const sortedSecs = Array.from(secretariasUnicas).sort();
             sortedSecs.forEach(sec => {
                 const a = document.createElement('a');
                 a.className = 'submenu-link';
                 a.onclick = () => viewSecretaria(sec);
-                a.innerText = sec; // Nome original exato vindo da base
+                a.innerText = sec; 
                 menuContainer.appendChild(a);
             });
         }
@@ -371,7 +396,7 @@
         function getSemaforoColorInfo(item) {
             const fase = normalizarTexto(getValorRobusto(item, ['kanban']));
             const statusStr = normalizarTexto(getValorRobusto(item, ['statusgeraldoprocesso', 'statusgeral', 'status']));
-            const isConcluido = fase === 'concluido' || statusStr.includes('concluido');
+            const isConcluido = fase === 'concluido' || statusStr.includes('concluido') || statusStr.includes('encerrado');
 
             if (isConcluido) return { bg: 'bg-green-100', border: 'border-green-400', text: 'text-green-800', dot: 'bg-green-500' };
 
@@ -419,7 +444,7 @@
                 let sec = getValorRobusto(d, ['secretaria', 'departamento']);
                 if(sec) secretariasUnicas.add(sec);
 
-                sec = sec || 'Outras';
+                sec = sec || 'Não Informada';
                 let impacto = getValorRobusto(d, ['graudeimpacto', 'impacto']) || 'Não Definido';
                 let statusParaGrafico = getValorRobusto(d, ['statusgeraldoprocesso', 'statusgeral', 'status']) || 'Ativo';
                 let resp = getValorRobusto(d, ['responsaveltecnico', 'responsavel']) || 'Não Atribuído';
@@ -435,54 +460,52 @@
                 kpiRow.innerHTML = `
                     <div class="vg-kpi-card"><div class="vg-val">${total}</div><div class="vg-label">Total de Processos</div></div>
                     <div class="vg-kpi-card"><div class="vg-val text-blue-600">${ativos}</div><div class="vg-label">Processos Ativos</div></div>
-                    <div class="vg-kpi-card"><div class="vg-val text-green-600">${concluidos}</div><div class="vg-label">Processos Concluídos</div></div>
+                    <div class="vg-kpi-card border-t-green-500"><div class="vg-val text-green-600">${concluidos}</div><div class="vg-label">Concluídos</div></div>
                     <div class="vg-kpi-card border-t-red-500"><div class="vg-val text-red-600">${atrasados}</div><div class="vg-label">Atrasados</div></div>
-                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">150 d</div><div class="vg-label">Média Estimada</div></div>
-                    <div class="vg-kpi-card border-t-teal-500"><div class="vg-val">${secretariasUnicas.size}</div><div class="vg-label">Secretarias</div></div>
-                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">5%</div><div class="vg-label">Taxa Retrabalho</div></div>
-                    <div class="vg-kpi-card border-t-amber-500"><div class="vg-val">${sugestoesCount}</div><div class="vg-label">Melhorias</div></div>
+                    <div class="vg-kpi-card border-t-[#ffb800]"><div class="vg-val">150 d</div><div class="vg-label">Média Estimada</div></div>
+                    <div class="vg-kpi-card border-t-[#003366]"><div class="vg-val">${secretariasUnicas.size}</div><div class="vg-label">Secretarias</div></div>
+                    <div class="vg-kpi-card border-t-[#ffb800]"><div class="vg-val">5%</div><div class="vg-label">Taxa Retrabalho</div></div>
+                    <div class="vg-kpi-card border-t-[#003366]"><div class="vg-val">${sugestoesCount}</div><div class="vg-label">Melhorias</div></div>
                 `;
             }
 
-            Chart.defaults.color = '#64748b';
-            Chart.defaults.font.family = 'Inter';
-            const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } };
+            const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11, family: 'Poppins' } } } } };
 
             if(vgChart1) vgChart1.destroy();
-            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 8); 
+            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]); 
             vgChart1 = new Chart(document.getElementById('vgChartSecretarias'), {
                 type: 'bar',
-                data: { labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 3 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
+                data: { labels: sortedSecs.map(s => s[0].length > 25 ? s[0].substring(0,25)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#003366', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 }, autoSkip: false } } } }
             });
 
             if(vgChart2) vgChart2.destroy();
             vgChart2 = new Chart(document.getElementById('vgChartImpacto'), {
                 type: 'doughnut',
-                data: { labels: Object.keys(impactoCounts), datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#3b82f6', '#1e3a8a', '#cbd5e1'], borderWidth: 0 }] },
-                options: { ...commonOptions, cutout: '65%' }
+                data: { labels: Object.keys(impactoCounts), datasets: [{ data: Object.values(impactoCounts), backgroundColor: ['#0ea5e9', '#003366', '#ffb800', '#cbd5e1'], borderWidth: 0 }] },
+                options: { ...commonOptions, cutout: '70%' }
             });
 
             if(vgChart3) vgChart3.destroy();
             vgChart3 = new Chart(document.getElementById('vgChartStatus'), {
                 type: 'doughnut',
-                data: { labels: Object.keys(statusGeralCounts), datasets: [{ data: Object.values(statusGeralCounts), backgroundColor: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b'], borderWidth: 0 }] },
-                options: { ...commonOptions, cutout: '65%' }
+                data: { labels: Object.keys(statusGeralCounts), datasets: [{ data: Object.values(statusGeralCounts), backgroundColor: ['#003366', '#10b981', '#ef4444', '#ffb800'], borderWidth: 0 }] },
+                options: { ...commonOptions, cutout: '70%' }
             });
 
             if(vgChart4) vgChart4.destroy();
             vgChart4 = new Chart(document.getElementById('vgChartEvolucao'), {
                 type: 'line',
-                data: { labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], datasets: [{ label: 'Entregas Concluídas', data: [5, 12, 18, 24, 30, 42, 55, 68, 75, 82, 88, 91], borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.2)', fill: true, tension: 0.1, pointRadius: 3, borderWidth: 2 }] },
+                data: { labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], datasets: [{ label: 'Entregas Concluídas', data: [5, 12, 18, 24, 30, 42, 55, 68, 75, 82, 88, 91], borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#e2e8f0' }, beginAtZero: true }, x: { grid: { display: false } } } }
             });
 
             if(vgChart5) vgChart5.destroy();
-            const sortedResp = Object.entries(respCounts).sort((a,b) => b[1]-a[1]).slice(0, 7);
+            const sortedResp = Object.entries(respCounts).sort((a,b) => b[1]-a[1]);
             vgChart5 = new Chart(document.getElementById('vgChartResponsavel'), {
                 type: 'bar',
-                data: { labels: sortedResp.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedResp.map(s => s[1]), backgroundColor: '#0ea5e9', borderRadius: 3 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
+                data: { labels: sortedResp.map(s => s[0].length > 25 ? s[0].substring(0,25)+'...' : s[0]), datasets: [{ data: sortedResp.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 }, autoSkip: false } } } }
             });
         }
 
@@ -497,10 +520,10 @@
             kpiRow.innerHTML += `
                 <div class="kanban-kpi-card cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all" onclick="window.showPhaseModal('Todos')">
                     <div>
-                        <h4 class="text-3xl font-black text-slate-800">${totalProcessos}</h4>
-                        <p class="text-[9px] uppercase font-bold text-slate-500 mt-1">Total de<br>Processos</p>
+                        <h4 class="text-3xl font-black text-navy">${totalProcessos}</h4>
+                        <p class="text-[9px] uppercase font-bold text-gray-500 mt-1">Total de<br>Processos</p>
                     </div>
-                    <div class="kanban-kpi-icon bg-blue-100 text-blue-600"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <div class="kanban-kpi-icon bg-blue-50 text-[#003366] border border-blue-100"><i class="fa-solid fa-clipboard-list"></i></div>
                 </div>
             `;
             
@@ -514,22 +537,22 @@
                 const pct = totalProcessos > 0 ? Math.round((items.length / totalProcessos) * 100) : 0;
 
                 kpiRow.innerHTML += `
-                    <div class="kanban-kpi-card cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all" style="border-left: 4px solid ${fase.cor_bg}" onclick="window.showPhaseModal('${fase.id}')">
+                    <div class="kanban-kpi-card cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all" style="border-left: 5px solid ${fase.cor_bg}" onclick="window.showPhaseModal('${fase.id}')">
                         <div>
-                            <h4 class="text-2xl font-black text-slate-800">${items.length}</h4>
-                            <p class="text-[9px] uppercase font-bold text-slate-500 mt-1 truncate" title="${fase.id}">${fase.id.substring(0,15)}</p>
+                            <h4 class="text-2xl font-black text-navy">${items.length}</h4>
+                            <p class="text-[9px] uppercase font-bold text-gray-500 mt-1 truncate" title="${fase.id}">${fase.id.substring(0,14)}</p>
                             <p class="text-[10px] font-black mt-1" style="color: ${fase.cor_bg}">${pct}%</p>
                         </div>
-                        <div class="kanban-kpi-icon" style="background-color: ${fase.cor_bg}"><i class="fa-solid ${fase.icone} text-white"></i></div>
+                        <div class="kanban-kpi-icon shadow-sm" style="background-color: ${fase.cor_bg}"><i class="fa-solid ${fase.icone} text-white"></i></div>
                     </div>
                 `;
 
                 const col = document.createElement('div');
                 col.className = 'kanban-col-wrapper';
                 col.innerHTML = `
-                    <div class="kanban-header shadow-sm" style="background-color: ${fase.cor_bg}">
-                        <span class="bg-black/20 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] shrink-0">${i+1}</span>
-                        <span class="flex-1 text-white tracking-tight">${fase.id}</span>
+                    <div class="kanban-header shadow-md" style="background-color: ${fase.cor_bg}">
+                        <span class="bg-black/20 text-white w-6 h-6 flex items-center justify-center rounded-full text-[10px] shrink-0">${i+1}</span>
+                        <span class="flex-1 text-white tracking-wide">${fase.id}</span>
                         <span class="kanban-header-count text-white">${items.length}</span>
                     </div>
                 `;
@@ -544,13 +567,13 @@
 
                     let dataHTML = dataPrevista 
                         ? `<div class="flex items-center gap-1.5 px-2 py-1 rounded border ${statusInfo.bg} ${statusInfo.border} ${statusInfo.text} text-[10px] font-bold shadow-sm whitespace-nowrap"><i class="fa-regular fa-calendar"></i> ${dataPrevista}</div>` 
-                        : `<div class="flex items-center gap-1.5 px-2 py-1 rounded border bg-slate-50 border-slate-200 text-slate-400 text-[10px] font-bold whitespace-nowrap"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
+                        : `<div class="flex items-center gap-1.5 px-2 py-1 rounded border bg-gray-50 border-gray-200 text-gray-400 text-[10px] font-bold whitespace-nowrap"><i class="fa-regular fa-calendar"></i> Sem data</div>`;
 
                     col.innerHTML += `
-                        <div class="kanban-card border-l-4 ${statusInfo.border} cursor-pointer hover:shadow-md transition-all" onclick="window.showProcessModal(${dataIndex})">
-                            <h5 class="uppercase font-bold text-slate-800 text-[10.5px] leading-snug mb-1 break-words">${processo}</h5>
-                            <p class="text-[10px] font-semibold text-slate-500 mb-3 break-words">${secretaria}</p>
-                            <div class="flex justify-between items-center">
+                        <div class="kanban-card border-l-4 ${statusInfo.border} cursor-pointer" onclick="window.showProcessModal(${dataIndex})">
+                            <h5 class="uppercase font-bold text-navy text-[11px] leading-tight mb-1 break-words">${processo}</h5>
+                            <p class="text-[10px] font-medium text-gray-500 mb-3 break-words">${secretaria}</p>
+                            <div class="flex justify-between items-center mt-auto">
                                 ${dataHTML}
                             </div>
                         </div>
@@ -582,16 +605,17 @@
 
             if (filtered.length === 0) {
                 Swal.fire({
-                    title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3">${titulo}</h3>`,
-                    html: `<p class="text-sm text-slate-500 mt-4">Nenhum registo encontrado.</p>`,
-                    confirmButtonColor: '#3b82f6'
+                    title: `<h3 class="text-lg font-black text-navy uppercase leading-tight border-l-4 border-blue-600 pl-3">${titulo}</h3>`,
+                    html: `<p class="text-sm text-gray-500 mt-4 font-poppins">Nenhum registo encontrado.</p>`,
+                    confirmButtonColor: '#003366',
+                    customClass: { popup: 'font-poppins rounded-xl' }
                 });
                 return;
             }
 
             let htmlContent = `
-                <p class="text-xs text-slate-500 mb-4 font-semibold uppercase tracking-wider text-left border-b border-slate-100 pb-2">${subtitulo} (${filtered.length})</p>
-                <div class="max-h-[55vh] overflow-y-auto pr-2 space-y-3 text-left scroll-smooth">
+                <p class="text-xs text-gray-500 mb-4 font-semibold uppercase tracking-wider text-left border-b border-gray-200 pb-2">${subtitulo} (${filtered.length})</p>
+                <div class="max-h-[55vh] overflow-y-auto pr-2 space-y-3 text-left scroll-smooth custom-scrollbar">
             `;
 
             filtered.forEach(item => {
@@ -602,13 +626,13 @@
                 const idVal = escapeHTML(getValorRobusto(item, ['id', 'codigo']) || '-');
 
                 htmlContent += `
-                    <div class="p-3 border ${statusInfo.border} ${statusInfo.bg} rounded cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5" onclick="Swal.close(); setTimeout(() => window.showProcessModal(${dataIndex}), 250)">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-[10px] font-bold bg-white/60 text-slate-600 px-2 py-0.5 rounded tracking-widest uppercase border border-slate-200/50">ID: ${idVal}</span>
+                    <div class="p-3 border ${statusInfo.border} ${statusInfo.bg} rounded-lg cursor-pointer hover:shadow-md transition-all hover:-translate-y-1" onclick="Swal.close(); setTimeout(() => window.showProcessModal(${dataIndex}), 250)">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold bg-white text-navy px-2 py-0.5 rounded shadow-sm tracking-widest uppercase border border-gray-200">ID: ${idVal}</span>
                             <span class="semaforo-dot ${statusInfo.dot} shadow-sm" title="Status"></span>
                         </div>
-                        <h5 class="text-xs font-bold text-slate-800 uppercase leading-snug mb-1">${processo}</h5>
-                        <p class="text-[10px] font-semibold text-slate-500 uppercase">${secretaria}</p>
+                        <h5 class="text-xs font-bold text-navy uppercase leading-snug mb-1">${processo}</h5>
+                        <p class="text-[10px] font-medium text-gray-500 uppercase">${secretaria}</p>
                     </div>
                 `;
             });
@@ -616,12 +640,12 @@
             htmlContent += `</div>`;
 
             Swal.fire({
-                title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3 text-left">${titulo}</h3>`,
+                title: `<h3 class="text-lg font-black text-navy uppercase leading-tight border-l-4 border-blue-600 pl-3 text-left">${titulo}</h3>`,
                 html: htmlContent,
                 showCloseButton: true,
                 showConfirmButton: false,
                 width: '600px',
-                customClass: { popup: 'rounded-xl shadow-2xl' }
+                customClass: { popup: 'font-poppins rounded-xl shadow-2xl border border-gray-100' }
             });
         };
 
@@ -636,10 +660,9 @@
             
             const statusInfo = getSemaforoColorInfo(item);
             
-            // Colunas que já estão no cabeçalho do Modal e não precisam repetir
+            // Puxa as colunas dinâmicas como solicitado
             const keysToIgnoreModal = ['rowindex', '_id', 'secretaria', 'departamento', 'nome', 'processo', 'id', 'codigo', 'statusgeraldoprocesso', 'statusgeral', 'status'];
 
-            // Constrói os dados dinamicamente puxando TODAS as outras colunas da planilha
             let detalhesHTML = '';
             Object.keys(item).forEach(key => {
                 const normalizedKey = normalizarTexto(key).replace(/[^a-z0-9]/g, '');
@@ -651,10 +674,10 @@
                     const isLongText = val.toString().length > 60 || label.includes('OBJETIVO') || label.includes('OBSERVA');
                     const colSpanClass = isLongText ? 'col-span-1 md:col-span-2' : 'col-span-1';
 
-                    let boxBg = 'bg-slate-50';
-                    let boxBorder = 'border-slate-100';
-                    let textColor = 'text-slate-700';
-                    let labelColor = 'text-slate-500';
+                    let boxBg = 'bg-gray-50';
+                    let boxBorder = 'border-gray-200';
+                    let textColor = 'text-navy';
+                    let labelColor = 'text-gray-500';
 
                     if (normalizedKey.includes('prazo') || normalizedKey.includes('dataprevista') || normalizedKey.includes('datadeentrega') || normalizedKey.includes('diasdeatraso')) {
                         boxBg = statusInfo.bg;
@@ -664,33 +687,33 @@
                     }
 
                     detalhesHTML += `
-                        <div class="p-3 rounded border ${boxBorder} ${boxBg} ${colSpanClass}">
-                            <p class="text-[8px] font-black ${labelColor} uppercase tracking-wider mb-1">${label}</p>
-                            <p class="text-xs font-bold ${textColor} leading-relaxed">${val}</p>
+                        <div class="p-3 rounded-lg border ${boxBorder} ${boxBg} ${colSpanClass}">
+                            <p class="text-[9px] font-bold ${labelColor} uppercase tracking-wider mb-1">${label}</p>
+                            <p class="text-xs font-semibold ${textColor} leading-relaxed">${val}</p>
                         </div>
                     `;
                 }
             });
 
             if(detalhesHTML === '') {
-                detalhesHTML = `<p class="text-xs text-slate-400 italic col-span-2">Nenhum dado adicional preenchido na planilha.</p>`;
+                detalhesHTML = `<p class="text-xs text-gray-400 italic col-span-2">Nenhum dado adicional preenchido na planilha.</p>`;
             }
             
             const htmlContent = `
-                <div class="text-left font-sans text-sm text-slate-700 space-y-4 mt-2">
-                    <div class="flex justify-between items-start border-b border-slate-100 pb-3 gap-2">
+                <div class="text-left font-poppins text-sm text-gray-700 space-y-4 mt-2">
+                    <div class="flex justify-between items-start border-b border-gray-200 pb-3 gap-2">
                         <div>
-                            <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded tracking-widest uppercase border border-slate-200">ID: ${id}</span>
-                            <p class="text-xs font-bold text-blue-600 mt-2 uppercase tracking-wide">${secretaria}</p>
+                            <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded shadow-sm tracking-widest uppercase border border-gray-300">ID: ${id}</span>
+                            <p class="text-xs font-bold text-blue-700 mt-2 uppercase tracking-wide">${secretaria}</p>
                         </div>
-                        <span class="text-[10px] font-black px-3 py-1.5 rounded flex items-center gap-1.5 border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border} uppercase shadow-sm shrink-0">
+                        <span class="text-[10px] font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border} uppercase shadow-sm shrink-0">
                             <span class="semaforo-dot ${statusInfo.dot}"></span>
                             ${statusGeral}
                         </span>
                     </div>
                     
                     <div class="mt-4">
-                        <h4 class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3"><i class="fa-solid fa-list-check mr-1"></i> Detalhes do Processo</h4>
+                        <h4 class="text-[11px] font-bold uppercase text-navy tracking-widest mb-3"><i class="fa-solid fa-list-check text-blue-500 mr-1"></i> Detalhes do Processo</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             ${detalhesHTML}
                         </div>
@@ -699,12 +722,12 @@
             `;
 
             Swal.fire({
-                title: `<h3 class="text-lg font-black text-slate-800 uppercase leading-tight border-l-4 border-blue-500 pl-3">${processo}</h3>`,
+                title: `<h3 class="text-lg font-black text-navy uppercase leading-tight border-l-4 border-[#ffb800] pl-3">${processo}</h3>`,
                 html: htmlContent,
                 showCloseButton: true,
                 showConfirmButton: false,
                 width: '650px',
-                customClass: { popup: 'rounded-xl shadow-2xl' }
+                customClass: { popup: 'font-poppins rounded-xl shadow-2xl border border-gray-100' }
             });
         };
 
@@ -716,7 +739,7 @@
 
             window.allData.forEach(d => {
                 let status = normalizarTexto(getValorRobusto(d, ['kanban']));
-                let sec = getValorRobusto(d, ['secretaria', 'departamento']) || 'Outras';
+                let sec = getValorRobusto(d, ['secretaria', 'departamento']) || 'Não Informada';
                 let faseEncontrada = FASES_KANBAN.find(f => normalizarTexto(f.id) === status) || FASES_KANBAN[0];
                 statusCounts[faseEncontrada.id] = (statusCounts[faseEncontrada.id] || 0) + 1;
                 secCounts[sec] = (secCounts[sec] || 0) + 1;
@@ -726,7 +749,7 @@
             kChartDonut = new Chart(document.getElementById('kanbanChartDonut'), {
                 type: 'doughnut',
                 data: { labels: FASES_KANBAN.map(f => f.id), datasets: [{ data: FASES_KANBAN.map(f => statusCounts[f.id] || 0), backgroundColor: FASES_KANBAN.map(f => f.cor_bg), borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'left', labels: { boxWidth: 10, font: { size: 9 } } } } }
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'left', labels: { boxWidth: 10, font: { size: 10, family: 'Poppins' } } } } }
             });
 
             if(kChartLine) kChartLine.destroy();
@@ -737,11 +760,11 @@
             });
 
             if(kChartBar) kChartBar.destroy();
-            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]).slice(0, 6);
+            const sortedSecs = Object.entries(secCounts).sort((a,b) => b[1]-a[1]);
             kChartBar = new Chart(document.getElementById('kanbanChartBarHoriz'), {
                 type: 'bar',
-                data: { labels: sortedSecs.map(s => s[0].length > 15 ? s[0].substring(0,15)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#3b82f6', borderRadius: 4 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 9 } } } } }
+                data: { labels: sortedSecs.map(s => s[0].length > 25 ? s[0].substring(0,25)+'...' : s[0]), datasets: [{ data: sortedSecs.map(s => s[1]), backgroundColor: '#003366', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#e2e8f0' } }, y: { grid: { display: false }, ticks: { font: { size: 10 }, autoSkip: false } } } }
             });
         }
 
@@ -756,14 +779,14 @@
             });
             
             if (sugestoes.length === 0) {
-                container.innerHTML = `<p class="col-span-full py-10 text-center text-slate-400 italic">Nenhum registo encontrado.</p>`;
+                container.innerHTML = `<p class="col-span-full py-10 text-center text-gray-400 italic">Nenhum registo encontrado.</p>`;
                 return;
             }
 
             let tableHTML = `
-                <div class="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <thead class="bg-gray-100 text-[10px] uppercase tracking-wider text-gray-600 border-b border-gray-200">
                             <tr>
                                 <th class="p-4 font-bold whitespace-nowrap">ID</th>
                                 <th class="p-4 font-bold whitespace-nowrap">Secretaria</th>
@@ -771,7 +794,7 @@
                                 <th class="p-4 font-bold">Sugestão de Melhoria</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="divide-y divide-gray-100">
             `;
 
             sugestoes.forEach(s => {
@@ -781,11 +804,11 @@
                 const sugestaoText = escapeHTML(getValorRobusto(s, ['sugestaodemelhoria']));
                 
                 tableHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-4 text-xs font-black text-slate-400 whitespace-nowrap">${idVal}</td>
-                        <td class="p-4 text-xs font-bold text-blue-600 uppercase whitespace-nowrap">${secretaria}</td>
-                        <td class="p-4 text-xs text-slate-700 font-semibold">${processo}</td>
-                        <td class="p-4 text-sm text-slate-600 italic">"${sugestaoText}"</td>
+                    <tr class="hover:bg-blue-50/50 transition-colors">
+                        <td class="p-4 text-xs font-black text-gray-400 whitespace-nowrap">${idVal}</td>
+                        <td class="p-4 text-xs font-bold text-blue-700 uppercase whitespace-nowrap">${secretaria}</td>
+                        <td class="p-4 text-xs text-navy font-semibold">${processo}</td>
+                        <td class="p-4 text-sm text-gray-600 italic">"${sugestaoText}"</td>
                     </tr>
                 `;
             });
@@ -805,14 +828,14 @@
             });
 
             if(acoes.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-10">Nenhum registo encontrado.</p>`;
+                container.innerHTML = `<p class="text-center text-gray-400 py-10">Nenhum registo encontrado.</p>`;
                 return;
             }
 
             let tableHTML = `
-                <div class="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <thead class="bg-gray-100 text-[10px] uppercase tracking-wider text-gray-600 border-b border-gray-200">
                             <tr>
                                 <th class="p-4 font-bold whitespace-nowrap">ID</th>
                                 <th class="p-4 font-bold whitespace-nowrap">Secretaria</th>
@@ -820,7 +843,7 @@
                                 <th class="p-4 font-bold">Próxima Ação</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="divide-y divide-gray-100">
             `;
 
             acoes.forEach(a => {
@@ -830,13 +853,13 @@
                 const acaoText = escapeHTML(getValorRobusto(a, ['proximaacao']));
                 
                 tableHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-4 text-xs font-black text-slate-400 whitespace-nowrap">${idVal}</td>
+                    <tr class="hover:bg-blue-50/50 transition-colors">
+                        <td class="p-4 text-xs font-black text-gray-400 whitespace-nowrap">${idVal}</td>
                         <td class="p-4 text-xs font-bold text-amber-600 uppercase whitespace-nowrap">${secretaria}</td>
-                        <td class="p-4 text-xs text-slate-700 font-semibold">${processo}</td>
-                        <td class="p-4 text-sm font-semibold text-slate-800">
+                        <td class="p-4 text-xs text-navy font-semibold">${processo}</td>
+                        <td class="p-4 text-sm font-semibold text-gray-800">
                             <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-clock-rotate-left text-amber-500/80"></i>
+                                <i class="fa-solid fa-clock-rotate-left text-[#ffb800]"></i>
                                 ${acaoText}
                             </div>
                         </td>
@@ -854,6 +877,11 @@
             document.getElementById(`sec-${id}`).classList.add('active');
             document.getElementById(`nav-${id}`)?.classList.add('active');
             document.getElementById('page-title').innerText = title;
+            
+            // Auto close sidebar on mobile after clicking
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.replace('w-64', 'w-0');
+            }
         };
 
         window.toggleAccordion = (id) => {
@@ -868,11 +896,10 @@
 
             const alvoNorm = normalizarTexto(nomeSelecionado);
 
-            // Filtro RIGOROSO: Só mostra se a coluna Secretaria for igualzinha ao nome clicado
             const secData = window.allData.filter(d => {
                 const valorSecretariaPlanilha = normalizarTexto(getValorRobusto(d, ['secretaria', 'departamento']));
                 if (!valorSecretariaPlanilha) return false;
-                return valorSecretariaPlanilha === alvoNorm; // <- Aqui está o segredo
+                return valorSecretariaPlanilha === alvoNorm; 
             });
             
             const content = document.getElementById('sec-data-content');
@@ -882,17 +909,17 @@
             content.innerHTML = ''; statsContainer.innerHTML = '';
             
             if (secData.length === 0) {
-                content.innerHTML = `<div class="col-span-full py-20 text-center text-slate-400 font-black italic">Nenhum registo mapeado.</div>`;
+                content.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 font-bold italic">Nenhum registo mapeado.</div>`;
                 return;
             }
 
             statsContainer.innerHTML = `
-                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded text-center"><p class="text-[8px] font-black uppercase text-blue-500">Processos</p><p class="text-lg font-black text-blue-700">${secData.length}</p></div>
+                <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg text-center shadow-sm"><p class="text-[9px] font-bold uppercase text-blue-600">Processos</p><p class="text-xl font-black text-navy">${secData.length}</p></div>
             `;
 
             secData.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'card p-6 border-l-4 border-l-blue-500 flex flex-col gap-4';
+                card.className = 'card p-6 border-l-8 border-l-[#003366] flex flex-col gap-5';
                 
                 const idVal = escapeHTML(getValorRobusto(p, ['id', 'codigo']));
                 const procVal = escapeHTML(getValorRobusto(p, ['processo', 'nome']));
@@ -902,12 +929,12 @@
                 let badgeColors = `${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`;
 
                 let html = `
-                    <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b border-slate-100 pb-3 gap-2">
+                    <div class="flex flex-col md:flex-row justify-between items-start mb-2 border-b border-gray-100 pb-4 gap-3">
                         <div>
-                            ${idVal ? `<span class="inline-block px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-black rounded mb-1 border border-slate-200">ID: ${idVal}</span>` : ''}
-                            <h4 class="text-lg font-black uppercase text-slate-800 leading-tight">${procVal || 'Sem Título'}</h4>
+                            ${idVal ? `<span class="inline-block px-2 py-1 bg-gray-100 text-gray-500 text-[10px] font-bold rounded mb-2 shadow-sm border border-gray-200">ID: ${idVal}</span>` : ''}
+                            <h4 class="text-lg font-black uppercase text-navy leading-tight tracking-tight">${procVal || 'Sem Título'}</h4>
                         </div>
-                        <span class="text-[10px] font-black px-3 py-1.5 rounded flex items-center gap-1.5 border ${badgeColors} shrink-0 uppercase shadow-sm">
+                        <span class="text-[10px] font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 border ${badgeColors} shrink-0 uppercase shadow-sm">
                             <span class="semaforo-dot ${statusInfo.dot}"></span>
                             ${statusVal || 'Pendente'}
                         </span>
@@ -915,7 +942,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 `;
 
-                // Aqui removemos o Kanban da lista de ignorados, e garantimos que a sugestão e a próxima ação são ocultadas
                 const keysToIgnore = ['rowindex', '_id', 'secretaria', 'departamento', 'nome', 'processo', 'id', 'codigo', 'statusgeraldoprocesso', 'statusgeral', 'status', 'sugestaodemelhoria', 'proximaacao'];
 
                 Object.keys(p).forEach(key => {
@@ -929,10 +955,10 @@
                         const isLongText = val.toString().length > 55 || label.includes('OBJETIVO') || label.includes('OBSERVA');
                         const colSpanClass = isLongText ? 'md:col-span-4 lg:col-span-5' : 'md:col-span-1';
 
-                        let boxBg = 'bg-slate-50';
-                        let boxBorder = 'border-slate-100';
-                        let textColor = 'text-slate-700';
-                        let labelColor = 'text-slate-500';
+                        let boxBg = 'bg-gray-50';
+                        let boxBorder = 'border-gray-200';
+                        let textColor = 'text-navy';
+                        let labelColor = 'text-gray-500';
 
                         if (normalizedKey.includes('prazo') || normalizedKey.includes('dataprevista') || normalizedKey.includes('datadeentrega') || normalizedKey.includes('diasdeatraso')) {
                             boxBg = statusInfo.bg;
@@ -942,9 +968,9 @@
                         }
 
                         html += `
-                            <div class="p-3 ${boxBg} rounded border ${boxBorder} ${colSpanClass}">
-                                <p class="text-[8px] font-black ${labelColor} uppercase tracking-tighter mb-1">${label}</p>
-                                <p class="text-xs font-bold ${textColor} leading-relaxed flex items-center">${val}</p>
+                            <div class="p-3 ${boxBg} rounded-lg border ${boxBorder} ${colSpanClass}">
+                                <p class="text-[9px] font-bold ${labelColor} uppercase tracking-wider mb-1">${label}</p>
+                                <p class="text-xs font-semibold ${textColor} leading-relaxed flex items-center">${val}</p>
                             </div>
                         `;
                     }
@@ -956,7 +982,14 @@
             });
         };
 
-        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('w-0');
+        window.toggleSidebar = () => {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('w-64')) {
+                sidebar.classList.replace('w-64', 'w-0');
+            } else {
+                sidebar.classList.replace('w-0', 'w-64');
+            }
+        };
     </script>
 </body>
 </html>
